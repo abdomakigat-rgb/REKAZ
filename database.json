@@ -1,1 +1,64 @@
+{
+  "rekaz_metadata": {
+    "version": "2.0.0",
+    "last_update": "2026-04-24",
+    "platform": "REKAZ BY MAKI"
+  },
+  "educational_stages": [
+    {
+      "id": "primary_4",
+      "name": "رابعة ابتدائي",
+      "category": "elementary",
+      "books": [
+        { "subject": "اللغة العربية", "pdf_url": "books/p4/arabic.pdf", "icon": "book" },
+        { "subject": "الرياضيات", "pdf_url": "books/p4/math.pdf", "icon": "calculator" },
+        { "subject": "العلوم", "pdf_url": "books/p4/science.pdf", "icon": "microscope" }
+      ]
+    },
+    {
+      "id": "secondary_3",
+      "name": "تالتة ثانوي",
+      "category": "secondary",
+      "books": [
+        { "subject": "فيزياء", "pdf_url": "books/s3/physics.pdf", "icon": "zap" },
+        { "subject": "كيمياء", "pdf_url": "books/s3/chemistry.pdf", "icon": "test-tube" },
+        { "subject": "أحياء", "pdf_url": "books/s3/biology.pdf", "icon": "dna" },
+        { "subject": "تاريخ", "pdf_url": "books/s3/history.pdf", "icon": "landmark" }
+      ]
+    }
+  ],
+  "quiz_bank": {
+    "اللغة العربية": [
+      {
+        "q": "ما هو جمع كلمة 'رِكاز'؟",
+        "options": ["ركائز", "ركزات", "أركز", "رُكُز"],
+        "correct": 0
+      }
+    ],
+    "فيزياء": [
+      {
+        "q": "ما هي وحدة قياس القوة الكهربائية الدافعة؟",
+        "options": ["الأمبير", "الأوم", "الفولت", "الوات"],
+        "correct": 2
+      },
+      {
+        "q": "تقاس المقاومة الكهربائية بجهاز؟",
+        "options": ["الاميتر", "الفولتميتر", "الأوميتر", "الواتميتر"],
+        "correct": 2
+      }
+    ],
+    "كيمياء": [
+      {
+        "q": "ما هو العدد الذري لعنصر الهيدروجين؟",
+        "options": ["1", "2", "6", "8"],
+        "correct": 0
+      }
+    ]
+  },
+  "maki_announcements": [
+    "أهلاً بك في النسخة المطورة من رِكاز 2026",
+    "تم إضافة كتب الفصل الدراسي الثاني لجميع المراحل",
+    "تحدي مكي القادم في مادة الفيزياء يوم الجمعة!"
+  ]
+}
 
