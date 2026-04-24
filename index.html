@@ -4,71 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="author" content="Ab Maki Experiments">
-    <meta name="theme-color" content="#050505">
+    <meta name="theme-color" content="#F9F6F0">
     <title>رِكاز 2026 | المنصة الملكية</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;500;700;900&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700;900&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        gold: '#D4AF37',
-                        royal: '#B8860B',
-                        dark: '#050505',
+                        gold: '#C5A059',
+                        royal: '#8E6F3E',
+                        pearl: '#F9F6F0',
+                        cream: '#FFFFFF',
                     }
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #050505; color: #e5e7eb; overflow-x: hidden; }
+        body { font-family: 'Tajawal', sans-serif; background-color: #F9F6F0; color: #2D2D2D; overflow-x: hidden; }
         
-        /* تصميم كلمة رِكاز الملكي */
+        /* تصميم كلمة رِكاز بخط نيسو العربي الفخم */
         .brand-name { 
-            font-family: 'Amiri', serif; 
-            background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+            font-family: 'Noto Naskh Arabic', serif; 
+            background: linear-gradient(135deg, #8E6F3E 0%, #C5A059 50%, #8E6F3E 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.4));
+            filter: drop-shadow(0 2px 4px rgba(142, 111, 62, 0.2));
             background-size: 200% auto;
-            animation: shine 3s linear infinite;
+            animation: shine 4s ease infinite;
         }
 
         @keyframes shine {
             to { background-position: 200% center; }
         }
 
-        /* تأثير التحميل الفخم */
+        /* شاشة تحميل جذابة (أبيض في ذهبي) */
         #splash-screen {
-            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
+            background: #F9F6F0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-        .loader-ring {
-            border: 2px solid transparent;
-            border-top-color: #D4AF37;
+        
+        .loader-glow {
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
-            animation: spin 1.5s linear infinite;
+            background: radial-gradient(circle, rgba(197, 160, 89, 0.2) 0%, transparent 70%);
+            animation: breathe 2s ease-in-out infinite;
+            position: absolute;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .glass-panel { background: rgba(15, 15, 15, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(212, 175, 55, 0.15); box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.5); opacity: 1; }
+        }
+
+        .glass-panel { 
+            background: rgba(255, 255, 255, 0.8); 
+            backdrop-filter: blur(15px); 
+            border: 1px solid rgba(197, 160, 89, 0.2); 
+            box-shadow: 0 20px 40px rgba(142, 111, 62, 0.05); 
+        }
         
         #gemini-chat-window {
             transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-            transform: scale(0.8) translateY(50px); opacity: 0; pointer-events: none;
+            transform: scale(0.9) translateY(40px); opacity: 0; pointer-events: none;
         }
         #gemini-chat-window.active { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
         
         .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #0a0a0a; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: linear-gradient(#D4AF37, #B8860B); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #F3EFE7; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #C5A059; border-radius: 10px; }
         
-        .book-content h2 { color: #D4AF37; font-family: 'Amiri', serif; font-weight: 700; font-size: 1.8rem; margin-top: 2rem; margin-bottom: 1rem; border-right: 5px solid #D4AF37; padding-right: 15px; }
-        .book-content h3 { color: #B8860B; font-weight: 700; font-size: 1.3rem; margin-top: 1.5rem; }
-        .book-content p { line-height: 2; margin-bottom: 1.2rem; text-align: justify; font-size: 1.05rem; }
+        .book-content h2 { color: #8E6F3E; font-family: 'Noto Naskh Arabic', serif; font-weight: 700; font-size: 1.6rem; margin-top: 2rem; border-right: 4px solid #C5A059; padding-right: 12px; }
+        .book-content p { line-height: 2; margin-bottom: 1.2rem; text-align: justify; color: #4A4A4A; }
     </style>
 </head>
 <body class="antialiased">
@@ -77,41 +93,41 @@
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
 
-    <div id="splash-screen" class="fixed inset-0 z-[1000] flex flex-col items-center justify-center transition-all duration-1000">
-        <div class="relative flex items-center justify-center">
-            <div class="loader-ring w-48 h-48 absolute"></div>
-            <h1 class="text-8xl font-black brand-name z-10 select-none">رِكاز</h1>
+    <div id="splash-screen" class="fixed inset-0 z-[1000] transition-all duration-1000">
+        <div class="loader-glow"></div>
+        <div class="relative">
+            <h1 class="text-7xl font-black brand-name select-none">رِكاز</h1>
         </div>
-        <div class="mt-12 text-center">
-            <p class="text-gold/60 tracking-[0.3em] text-xs uppercase animate-pulse mb-4">جاري تحضير التجربة الملكية</p>
-            <div class="w-64 h-1 bg-white/5 rounded-full overflow-hidden">
-                <div id="progress-bar" class="w-0 h-full bg-gradient-to-r from-gold via-royal to-gold transition-all duration-700 shadow-[0_0_15px_#D4AF37]"></div>
+        <div class="mt-8 flex flex-col items-center">
+            <p class="text-gold font-medium tracking-widest text-[10px] uppercase mb-3">فخامة المحتوى والجوهر</p>
+            <div class="w-48 h-0.5 bg-gold/10 rounded-full overflow-hidden">
+                <div id="progress-bar" class="w-0 h-full bg-gold transition-all duration-700"></div>
             </div>
         </div>
     </div>
 
-    <section id="auth-gate" class="min-h-screen flex items-center justify-center p-4 relative z-50 bg-[radial-gradient(circle_at_top_right,_#D4AF3715,_transparent)]">
-        <div class="glass-panel w-full max-w-lg p-12 rounded-[3.5rem]">
-            <div class="text-center mb-10">
-                <div class="w-20 h-20 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-gold/20">
-                    <i data-lucide="crown" class="text-gold w-10 h-10"></i>
+    <section id="auth-gate" class="min-h-screen flex items-center justify-center p-4 relative z-50 bg-[radial-gradient(circle_at_top_right,_#C5A05915,_transparent)]">
+        <div class="glass-panel w-full max-w-lg p-10 rounded-[3rem]">
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm border border-gold/10">
+                    <i data-lucide="shield-check" class="text-gold w-8 h-8"></i>
                 </div>
-                <h2 class="text-6xl font-black brand-name mb-4">رِكاز</h2>
-                <p id="auth-subtitle" class="text-gray-400 text-sm font-light tracking-[0.2em]">المنصة الرقمية الفاخرة</p>
+                <h2 class="text-5xl font-black brand-name mb-2">رِكاز</h2>
+                <p id="auth-subtitle" class="text-gray-400 text-xs font-medium tracking-[0.1em]">عالم من المعرفة الراقية</p>
             </div>
 
-            <div class="flex bg-white/5 p-1.5 rounded-2xl border border-white/5 mb-8">
-                <button onclick="toggleAuthMode('login')" id="btn-login-tab" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all bg-gold text-black shadow-lg">دخول</button>
-                <button onclick="toggleAuthMode('signup')" id="btn-signup-tab" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all text-gray-500">حساب جديد</button>
+            <div class="flex bg-gold/5 p-1 rounded-2xl border border-gold/10 mb-8">
+                <button onclick="toggleAuthMode('login')" id="btn-login-tab" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all bg-gold text-white shadow-md">دخول</button>
+                <button onclick="toggleAuthMode('signup')" id="btn-signup-tab" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all text-gold/60">حساب جديد</button>
             </div>
 
-            <div class="space-y-5">
+            <div class="space-y-4">
                 <div id="signup-fields" class="hidden">
                     <div class="flex justify-center mb-6">
                         <label class="relative cursor-pointer group">
-                            <div class="w-28 h-28 rounded-full border-2 border-dashed border-gold/40 flex items-center justify-center overflow-hidden bg-gold/5 group-hover:bg-gold/10 transition-colors">
+                            <div class="w-24 h-24 rounded-full border-2 border-dashed border-gold/30 flex items-center justify-center overflow-hidden bg-white group-hover:border-gold transition-all">
                                 <img id="pfp-preview" class="hidden w-full h-full object-cover">
-                                <i data-lucide="camera" class="text-gold group-hover:scale-110 transition-transform"></i>
+                                <i data-lucide="user-plus" class="text-gold/40 group-hover:text-gold"></i>
                             </div>
                             <input type="file" class="hidden" onchange="previewImage(this)" id="reg-pfp">
                         </label>
@@ -119,142 +135,111 @@
                 </div>
                 
                 <div class="relative">
-                    <i data-lucide="user" class="absolute right-5 top-5 text-gold/40 w-5 h-5"></i>
-                    <input type="text" id="auth-user" placeholder="اسم المستخدم" class="w-full bg-black/40 border border-white/10 p-5 pr-14 rounded-2xl outline-none focus:border-gold/60 text-white transition-all">
+                    <i data-lucide="user" class="absolute right-4 top-4 text-gold/30 w-5 h-5"></i>
+                    <input type="text" id="auth-user" placeholder="اسمك الكريم" class="w-full bg-white border border-gold/10 p-4 pr-12 rounded-2xl outline-none focus:border-gold/50 text-gray-700 transition-all">
                 </div>
                 <div class="relative">
-                    <i data-lucide="lock" class="absolute right-5 top-5 text-gold/40 w-5 h-5"></i>
-                    <input type="password" id="auth-pass" placeholder="كلمة السر" class="w-full bg-black/40 border border-white/10 p-5 pr-14 rounded-2xl outline-none focus:border-gold/60 text-white transition-all">
+                    <i data-lucide="lock-keyhole" class="absolute right-4 top-4 text-gold/30 w-5 h-5"></i>
+                    <input type="password" id="auth-pass" placeholder="كلمة المرور" class="w-full bg-white border border-gold/10 p-4 pr-12 rounded-2xl outline-none focus:border-gold/50 text-gray-700 transition-all">
                 </div>
 
-                <button onclick="handleAuth()" class="w-full py-5 rounded-2xl bg-gradient-to-r from-gold to-royal text-black font-black mt-6 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-gold/20 text-lg">
-                    استمرار في رِكاز
+                <button onclick="handleAuth()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-gold to-royal text-white font-black mt-4 hover:shadow-lg hover:shadow-gold/20 active:scale-95 transition-all">
+                    دخول المنصة
                 </button>
             </div>
         </div>
     </section>
 
     <div id="main-app" class="hidden opacity-0 transition-all duration-1000">
-        <header class="sticky top-0 z-[100] bg-black/80 backdrop-blur-3xl border-b border-white/5 p-4 md:px-16 flex justify-between items-center">
-            <div class="flex items-center gap-5">
+        <header class="sticky top-0 z-[100] bg-white/70 backdrop-blur-xl border-b border-gold/10 p-4 md:px-16 flex justify-between items-center">
+            <div class="flex items-center gap-4">
                 <button onclick="openProfileEdit()" class="relative group">
-                    <div class="w-14 h-14 rounded-full p-0.5 bg-gradient-to-tr from-gold to-transparent">
-                        <img id="user-avatar" src="" class="w-full h-full rounded-full object-cover border-2 border-black">
+                    <div class="w-12 h-12 rounded-full p-0.5 bg-gold/20">
+                        <img id="user-avatar" src="" class="w-full h-full rounded-full object-cover border-2 border-white">
                     </div>
-                    <div class="absolute -bottom-1 -right-1 bg-gold rounded-full p-1.5 shadow-lg border-2 border-black"><i data-lucide="edit-3" class="w-3 h-3 text-black"></i></div>
                 </button>
                 <div>
-                    <h3 id="user-name-display" class="font-black text-white text-lg">المستخدم</h3>
-                    <div class="flex items-center gap-1">
-                        <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-                        <p class="text-[10px] text-gold/80 font-bold uppercase tracking-widest">Premium Member</p>
-                    </div>
+                    <h3 id="user-name-display" class="font-bold text-gray-800 text-sm">المستخدم</h3>
+                    <p class="text-[9px] text-gold font-black uppercase tracking-tighter">Elite Member</p>
                 </div>
             </div>
-            <h1 class="brand-name text-3xl font-bold md:block hidden">رِكاز</h1>
-            <button onclick="logoutMaki()" class="p-4 bg-red-500/5 text-red-500 rounded-2xl border border-red-500/10 hover:bg-red-500/20 transition-all"><i data-lucide="power"></i></button>
+            <h1 class="brand-name text-2xl font-bold md:block hidden">رِكاز</h1>
+            <button onclick="logoutMaki()" class="p-3 bg-red-50 text-red-400 rounded-xl hover:bg-red-100 transition-all"><i data-lucide="log-out" class="w-5 h-5"></i></button>
         </header>
 
-        <main class="max-w-4xl mx-auto p-6 pb-40 space-y-16">
-            
-            <div id="section-home" class="space-y-16">
-                <section id="feed" class="space-y-8">
-                    <div class="glass-panel p-8 rounded-[2.5rem]">
-                        <div class="flex items-center gap-3 mb-6">
-                            <i data-lucide="pen-tool" class="text-gold w-5 h-5"></i>
-                            <h4 class="text-xl font-bold brand-name">إلهام جديد في رِكاز</h4>
-                        </div>
-                        <textarea id="post-input" placeholder="ما هي أفكارك المبدعة اليوم؟" class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl outline-none focus:border-gold/40 resize-none h-32 text-base transition-all"></textarea>
-                        <div class="flex justify-end mt-4">
-                            <button onclick="createPost()" class="px-10 py-3 bg-gold text-black rounded-xl font-black text-sm shadow-xl hover:brightness-110 active:scale-95 transition-all">نشر المحتوى</button>
+        <main class="max-w-4xl mx-auto p-6 pb-40 space-y-12">
+            <div id="section-home" class="space-y-12">
+                <section id="feed" class="space-y-6">
+                    <div class="glass-panel p-6 rounded-3xl border-none shadow-sm">
+                        <textarea id="post-input" placeholder="اكتب فكرة تليق بمقام رِكاز..." class="w-full bg-transparent p-2 rounded-2xl outline-none resize-none h-24 text-gray-600 font-medium"></textarea>
+                        <div class="flex justify-end mt-2">
+                            <button onclick="createPost()" class="px-8 py-2 bg-gold text-white rounded-xl font-bold text-xs shadow-md shadow-gold/20">نشر</button>
                         </div>
                     </div>
-                    <div id="posts-container" class="space-y-8"></div>
+                    <div id="posts-container" class="space-y-6"></div>
                 </section>
             </div>
 
             <div id="section-books" class="hidden space-y-10 animate-in fade-in duration-700">
-                <div class="glass-panel p-10 rounded-[3rem] border-gold/20">
-                    <div class="flex items-center gap-5 mb-10 pb-6 border-b border-white/5">
-                        <div class="p-4 bg-gold/10 rounded-2xl"><i data-lucide="book-open" class="text-gold w-8 h-8"></i></div>
-                        <h2 class="text-4xl font-bold brand-name">خزانة الفقه المالكي</h2>
+                <div class="glass-panel p-10 rounded-[2.5rem]">
+                    <div class="flex items-center gap-4 mb-8">
+                        <i data-lucide="library" class="text-gold w-8 h-8"></i>
+                        <h2 class="text-3xl font-bold brand-name">مكتبة الفقه</h2>
                     </div>
-                    
-                    <div class="book-content custom-scrollbar h-[650px] overflow-y-auto px-6 text-gray-300">
+                    <div class="book-content custom-scrollbar h-[550px] overflow-y-auto px-4">
                         <h2>باب البيوع</h2>
-                        <p>البيع لغة: مقابلة شيء بشيء. واصطلاحاً: عقد معاوضة على غير منافع ولا متعة لذة، ذو مكايسة، أحد عوضيه غير ذهب ولا فضة معين غير عين فيهما.</p>
-                        <h3>أركان البيع</h3>
-                        <p>أركان البيع ثلاثة: عاقد (بائع ومشترٍ)، ومعقود عليه (ثمن ومثمن)، وصيغة (إيجاب وقبول).</p>
-                        
+                        <p>البيع لغة: مقابلة شيء بشيء. واصطلاحاً: عقد معاوضة على غير منافع ولا متعة لذة، ذو مكايسة.</p>
                         <h2>باب الربا</h2>
-                        <p>الربا لغة: الزيادة. وهو قسمان: ربا الفضل وربا النساء. ربا الفضل هو الزيادة في أحد المتساويين جنساً، وربا النساء هو التأخير في قبض أحد العوضين.</p>
-                        <p>القاعدة في المذهب المالكي: "كل ما يقتات ويدخر يجري فيه الربا".</p>
-
-                        <h2>باب السلم</h2>
-                        <p>السلم: هو بيع موصوف في الذمة ببدل يعجل ظرف العقد. ويسمى أيضاً "بيع المحاويج" لأنه رخصة للمحتاجين للثمن قبل نضج الثمار.</p>
-                        
-                        <div class="mt-16 p-10 bg-gold/5 rounded-[2rem] border border-gold/10 relative overflow-hidden">
-                            <div class="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="feather" class="w-20 h-20 text-gold"></i></div>
-                            <p class="text-center font-bold text-gold text-xl italic relative z-10">"رِكاز.. حيث يلتقي العلم بالفخامة"</p>
+                        <p>الربا لغة: الزيادة. وهو قسمان: ربا الفضل وربا النساء. والقاعدة: "كل ما يقتات ويدخر يجري فيه الربا".</p>
+                        <div class="mt-12 p-8 bg-gold/5 rounded-2xl text-center border border-gold/10">
+                            <p class="text-gold font-bold italic">رِكاز .. فخرُ العلمِ والعملِ</p>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
 
-        <div id="gemini-chat-window" class="fixed bottom-36 left-6 right-6 md:left-auto md:right-12 md:w-[400px] z-[300]">
-            <div class="glass-panel p-8 rounded-[3rem] h-[550px] flex flex-col">
-                <div class="flex items-center justify-between mb-6 pb-6 border-b border-white/5">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-gold/20 rounded-full flex items-center justify-center">
-                            <i data-lucide="sparkles" class="text-gold animate-pulse w-5 h-5"></i>
-                        </div>
-                        <span class="font-black text-gold text-lg">مساعد رِكاز</span>
+        <div id="gemini-chat-window" class="fixed bottom-32 left-6 right-6 md:left-auto md:right-12 md:w-[360px] z-[300]">
+            <div class="glass-panel p-6 rounded-[2.5rem] h-[480px] flex flex-col border-gold/20">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 bg-gold rounded-full animate-ping"></span>
+                        <span class="font-black text-gold text-sm">ذكاء رِكاز</span>
                     </div>
-                    <button onclick="toggleGemini()" class="p-2 hover:bg-white/5 rounded-full transition-colors"><i data-lucide="x" class="text-gray-500"></i></button>
+                    <button onclick="toggleGemini()"><i data-lucide="chevron-down" class="text-gray-400"></i></button>
                 </div>
-                <div id="chat-content" class="flex-1 overflow-y-auto custom-scrollbar space-y-6 mb-6 text-sm pr-2"></div>
+                <div id="chat-content" class="flex-1 overflow-y-auto custom-scrollbar space-y-4 mb-4 text-xs pr-2 text-gray-500"></div>
                 <div class="relative">
-                    <input type="text" id="gemini-input" placeholder="اطلب المساعدة العلمية..." class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl outline-none focus:border-gold/50 text-white shadow-inner transition-all">
-                    <button onclick="sendToGemini()" class="absolute left-3 top-3 bg-gold p-2.5 rounded-xl text-black hover:scale-105 active:scale-90 transition-all shadow-lg"><i data-lucide="send" class="w-5 h-5"></i></button>
+                    <input type="text" id="gemini-input" placeholder="اسأل وسنجيبك..." class="w-full bg-white border border-gold/10 p-4 rounded-2xl outline-none focus:border-gold/40 text-gray-600">
+                    <button onclick="sendToGemini()" class="absolute left-2 top-2 bg-gold p-2 rounded-xl text-white"><i data-lucide="sparkles" class="w-4 h-4"></i></button>
                 </div>
             </div>
         </div>
 
-        <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 w-[92%] max-w-lg h-24 bg-black/80 backdrop-blur-3xl rounded-[2.5rem] border border-white/10 flex justify-around items-center z-[200] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)]">
-            <button onclick="showSection('home')" id="nav-home" class="text-gold transition-all hover:scale-125 p-4"><i data-lucide="home"></i></button>
-            <button onclick="showSection('books')" id="nav-books" class="text-gray-500 transition-all hover:scale-125 p-4"><i data-lucide="book-open"></i></button>
-            
-            <button onclick="toggleGemini()" class="group relative w-20 h-20 -mt-16 transition-all duration-500">
-                <div class="absolute inset-0 bg-gold rounded-[2rem] rotate-45 group-hover:rotate-[225deg] transition-all duration-700 shadow-[0_0_30px_#D4AF3788] border-4 border-black"></div>
-                <div class="absolute inset-0 flex items-center justify-center text-black z-10">
-                    <i data-lucide="sparkles" class="w-8 h-8 group-hover:scale-125 transition-transform"></i>
-                </div>
+        <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[85%] max-w-sm h-20 bg-white/80 backdrop-blur-2xl rounded-full border border-gold/10 flex justify-around items-center z-[200] shadow-xl">
+            <button onclick="showSection('home')" id="nav-home" class="text-gold transition-all"><i data-lucide="layout-grid"></i></button>
+            <button onclick="showSection('books')" id="nav-books" class="text-gray-300 transition-all"><i data-lucide="book-marked"></i></button>
+            <button onclick="toggleGemini()" class="w-14 h-14 bg-gradient-to-b from-gold to-royal rounded-2xl flex items-center justify-center text-white shadow-lg -mt-10 border-4 border-pearl transition-transform hover:scale-105">
+                <i data-lucide="wand-2"></i>
             </button>
-
-            <button class="text-gray-500 transition-all hover:scale-125 p-4"><i data-lucide="trophy"></i></button>
-            <button onclick="openProfileEdit()" class="text-gray-500 transition-all hover:scale-125 p-4"><i data-lucide="user-cog"></i></button>
+            <button class="text-gray-300"><i data-lucide="medal"></i></button>
+            <button onclick="openProfileEdit()" class="text-gray-300"><i data-lucide="settings"></i></button>
         </nav>
     </div>
 
-    <div id="profile-modal" class="fixed inset-0 z-[1000] bg-black/95 hidden items-center justify-center p-6 backdrop-blur-xl transition-all duration-500">
-        <div class="glass-panel w-full max-w-md p-10 rounded-[3rem] text-center border-gold/30">
-            <h3 class="text-3xl font-black text-gold mb-8 brand-name">تعديل البروفايل الملكي</h3>
-            <div class="flex justify-center mb-10">
-                <label class="relative cursor-pointer group">
-                    <div class="w-32 h-32 rounded-full border-4 border-gold p-1 shadow-2xl">
-                        <img id="edit-pfp-preview" class="w-full h-full rounded-full object-cover">
-                    </div>
-                    <div class="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
-                        <i data-lucide="camera" class="text-white w-8 h-8"></i>
-                    </div>
+    <div id="profile-modal" class="fixed inset-0 z-[1000] bg-white/80 hidden items-center justify-center p-6 backdrop-blur-md">
+        <div class="glass-panel w-full max-w-sm p-8 rounded-[3rem] text-center">
+            <h3 class="text-xl font-bold text-gold mb-6">تحديث البيانات الملكية</h3>
+            <div class="flex justify-center mb-6">
+                <label class="relative cursor-pointer">
+                    <img id="edit-pfp-preview" class="w-24 h-24 rounded-3xl border-2 border-gold/20 object-cover p-1">
                     <input type="file" class="hidden" onchange="updateProfilePFP(this)">
                 </label>
             </div>
-            <input type="text" id="edit-name-input" class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl mb-6 outline-none focus:border-gold/50 text-white text-center text-xl" placeholder="الاسم الجديد">
-            <div class="flex gap-4">
-                <button onclick="saveProfileChanges()" class="flex-1 py-4 bg-gold text-black rounded-2xl font-black shadow-lg hover:brightness-110 active:scale-95 transition-all">حفظ التغييرات</button>
-                <button onclick="closeProfileEdit()" class="flex-1 py-4 bg-white/10 text-white rounded-2xl font-bold border border-white/10">إلغاء</button>
+            <input type="text" id="edit-name-input" class="w-full bg-white border border-gold/10 p-4 rounded-xl mb-4 text-center" placeholder="الاسم الجديد">
+            <div class="flex gap-2">
+                <button onclick="saveProfileChanges()" class="flex-1 py-3 bg-gold text-white rounded-xl font-bold">تأكيد</button>
+                <button onclick="closeProfileEdit()" class="flex-1 py-3 bg-gray-50 text-gray-400 rounded-xl">تراجع</button>
             </div>
         </div>
     </div>
@@ -268,16 +253,15 @@
             document.getElementById('section-home').classList.add('hidden');
             document.getElementById('section-books').classList.add('hidden');
             document.getElementById('section-' + sectionId).classList.remove('hidden');
-            document.getElementById('nav-home').className = sectionId === 'home' ? 'text-gold transition-all scale-125' : 'text-gray-500 transition-all';
-            document.getElementById('nav-books').className = sectionId === 'books' ? 'text-gold transition-all scale-125' : 'text-gray-500 transition-all';
+            document.getElementById('nav-home').className = sectionId === 'home' ? 'text-gold' : 'text-gray-300';
+            document.getElementById('nav-books').className = sectionId === 'books' ? 'text-gold' : 'text-gray-300';
         }
 
         function toggleAuthMode(mode) {
             authMode = mode;
             document.getElementById('signup-fields').style.display = mode === 'signup' ? 'block' : 'none';
-            document.getElementById('btn-login-tab').className = mode === 'login' ? 'flex-1 py-3 rounded-xl font-bold text-sm transition-all bg-gold text-black shadow-lg' : 'flex-1 py-3 rounded-xl font-bold text-sm transition-all text-gray-500';
-            document.getElementById('btn-signup-tab').className = mode === 'signup' ? 'flex-1 py-3 rounded-xl font-bold text-sm transition-all bg-gold text-black shadow-lg' : 'flex-1 py-3 rounded-xl font-bold text-sm transition-all text-gray-500';
-            document.getElementById('auth-subtitle').innerText = mode === 'login' ? 'المنصة الرقمية الفاخرة' : 'أنشئ هويتك الملكية في رِكاز';
+            document.getElementById('btn-login-tab').className = mode === 'login' ? 'flex-1 py-3 rounded-xl font-bold text-sm bg-gold text-white shadow-md' : 'flex-1 py-3 rounded-xl font-bold text-sm text-gold/60';
+            document.getElementById('btn-signup-tab').className = mode === 'signup' ? 'flex-1 py-3 rounded-xl font-bold text-sm bg-gold text-white shadow-md' : 'flex-1 py-3 rounded-xl font-bold text-sm text-gold/60';
         }
 
         function previewImage(input) {
@@ -295,23 +279,19 @@
         function handleAuth() {
             const user = document.getElementById('auth-user').value;
             const pass = document.getElementById('auth-pass').value;
-            if(!user || !pass) return alert("يرجى ملء كافة التفاصيل الملكية");
+            if(!user || !pass) return;
 
             if(authMode === 'signup') {
-                const userData = {
-                    name: user, pass: pass,
-                    pfp: document.getElementById('pfp-preview').src || `https://ui-avatars.com/api/?name=${user}&background=D4AF37&color=000`
-                };
+                const userData = { name: user, pass: pass, pfp: document.getElementById('pfp-preview').src || `https://ui-avatars.com/api/?name=${user}&background=C5A059&color=fff` };
                 localStorage.setItem(`rekaz_user_${user}`, JSON.stringify(userData));
-                alert("تم الترحيب بك كعضو جديد في رِكاز! يرجى تسجيل الدخول.");
                 toggleAuthMode('login');
             } else {
                 const stored = localStorage.getItem(`rekaz_user_${user}`);
                 if(stored) {
                     const parsed = JSON.parse(stored);
                     if(parsed.pass === pass) { currentUser = parsed; loginToApp(); }
-                    else alert("بيانات المرور غير متطابقة");
-                } else alert("هذا المستخدم غير مسجل في السجلات الملكية");
+                    else alert("خطأ في كلمة المرور");
+                } else alert("المستخدم غير موجود");
             }
         }
 
@@ -319,14 +299,11 @@
             document.getElementById('rekaz-bg-music').play();
             document.getElementById('user-name-display').innerText = currentUser.name;
             document.getElementById('user-avatar').src = currentUser.pfp;
-            document.getElementById('auth-gate').classList.add('opacity-0');
+            document.getElementById('auth-gate').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('auth-gate').style.display = 'none';
                 document.getElementById('main-app').classList.remove('hidden');
-                setTimeout(() => {
-                    document.getElementById('main-app').classList.add('opacity-100');
-                    loadPosts();
-                }, 100);
+                setTimeout(() => { document.getElementById('main-app').style.opacity = '1'; loadPosts(); }, 100);
             }, 500);
             initGemini();
         }
@@ -335,7 +312,7 @@
             const text = document.getElementById('post-input').value;
             if(!text) return;
             const posts = JSON.parse(localStorage.getItem('rekaz_posts') || '[]');
-            posts.unshift({ author: currentUser.name, avatar: currentUser.pfp, content: text, time: "منذ قليل" });
+            posts.unshift({ author: currentUser.name, avatar: currentUser.pfp, content: text, time: "الآن" });
             localStorage.setItem('rekaz_posts', JSON.stringify(posts));
             document.getElementById('post-input').value = "";
             loadPosts();
@@ -345,15 +322,12 @@
             const container = document.getElementById('posts-container');
             const posts = JSON.parse(localStorage.getItem('rekaz_posts') || '[]');
             container.innerHTML = posts.map(p => `
-                <div class="glass-panel p-8 rounded-[2.5rem] animate-in fade-in slide-in-from-bottom-8 duration-700">
-                    <div class="flex items-center gap-4 mb-6">
-                        <img src="${p.avatar}" class="w-14 h-14 rounded-full object-cover border-2 border-gold/30 p-0.5">
-                        <div>
-                            <h5 class="font-black text-white text-base">${p.author}</h5>
-                            <p class="text-[10px] text-gold/60 font-bold uppercase tracking-wider">${p.time}</p>
-                        </div>
+                <div class="glass-panel p-6 rounded-3xl animate-in slide-in-from-bottom-4 duration-500 shadow-sm border-none">
+                    <div class="flex items-center gap-3 mb-4">
+                        <img src="${p.avatar}" class="w-10 h-10 rounded-xl object-cover border border-gold/10">
+                        <div><h5 class="font-bold text-gray-700 text-xs">${p.author}</h5><p class="text-[9px] text-gray-400">${p.time}</p></div>
                     </div>
-                    <p class="text-gray-300 leading-relaxed text-base">${p.content}</p>
+                    <p class="text-xs text-gray-500 leading-relaxed">${p.content}</p>
                 </div>
             `).join('');
         }
@@ -387,49 +361,17 @@
         function toggleGemini() { document.getElementById('gemini-chat-window').classList.toggle('active'); }
 
         function initGemini() {
-            const content = document.getElementById('chat-content');
-            content.innerHTML = `
-                <div class="flex gap-3 animate-in slide-in-from-right duration-500">
-                    <div class="w-8 h-8 bg-gold rounded-lg flex items-center justify-center flex-shrink-0">
-                        <i data-lucide="sparkles" class="w-4 h-4 text-black"></i>
-                    </div>
-                    <div class="bg-white/5 border border-white/10 p-4 rounded-2xl rounded-tr-none text-gray-300">
-                        أهلاً بك يا ${currentUser.name} في منصة رِكاز. كيف يمكن لمساعدك الرقمي خدمتك اليوم في مسيرتك العلمية؟
-                    </div>
-                </div>
-            `;
-            lucide.createIcons();
+            document.getElementById('chat-content').innerHTML = `<div class="bg-gold/5 p-3 rounded-xl">أهلاً بك في رِكاز! كيف نخدمك؟</div>`;
         }
 
         function sendToGemini() {
             const input = document.getElementById('gemini-input');
             if(!input.value) return;
             const content = document.getElementById('chat-content');
-            
-            content.innerHTML += `
-                <div class="flex justify-end gap-3 animate-in slide-in-from-left duration-500">
-                    <div class="bg-gold/10 border border-gold/20 p-4 rounded-2xl rounded-tl-none text-gold">
-                        ${input.value}
-                    </div>
-                </div>
-            `;
-            
-            const userMsg = input.value;
+            content.innerHTML += `<div class="text-gold text-left font-bold mb-2">${input.value}</div>`;
             input.value = "";
-            content.scrollTop = content.scrollHeight;
-
             setTimeout(() => {
-                content.innerHTML += `
-                    <div class="flex gap-3 animate-in slide-in-from-right duration-500">
-                        <div class="w-8 h-8 bg-gold rounded-lg flex items-center justify-center flex-shrink-0">
-                            <i data-lucide="sparkles" class="w-4 h-4 text-black"></i>
-                        </div>
-                        <div class="bg-white/5 border border-white/10 p-4 rounded-2xl rounded-tr-none text-gray-300">
-                            طلبك قيد المراجعة في مكتبة رِكاز. علم الفقه بحر واسع ونحن هنا لنبسطه لك.
-                        </div>
-                    </div>
-                `;
-                lucide.createIcons();
+                content.innerHTML += `<div class="bg-gold/5 p-3 rounded-xl mb-4">طلبك قيد المعالجة في السجلات الملكية..</div>`;
                 content.scrollTop = content.scrollHeight;
             }, 1000);
         }
@@ -442,9 +384,8 @@
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
                 splash.style.opacity = '0';
-                splash.style.transform = 'scale(1.1)';
                 setTimeout(() => splash.style.display = 'none', 1000);
-            }, 1500);
+            }, 2000);
         });
     </script>
 </body>
