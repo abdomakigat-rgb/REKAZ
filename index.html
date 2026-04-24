@@ -43,6 +43,15 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        /* ستايل رفع الصورة */
+        .profile-upload-label {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .profile-upload-label:hover {
+            border-color: #D4AF37;
+            background: rgba(212, 175, 55, 0.05);
+        }
     </style>
 </head>
 <body class="bg-dark text-gray-200 font-['Cairo'] overflow-x-hidden antialiased">
@@ -75,7 +84,17 @@
                 <button onclick="switchTab('signup')" id="tab-signup" class="flex-1 py-4 rounded-2xl font-black text-xs transition-all text-gray-500">حساب جديد</button>
             </div>
 
-            <div id="auth-form" class="space-y-6"></div>
+            <div id="auth-form" class="space-y-6">
+                <div class="flex flex-col items-center gap-4 mb-4" id="pfp-container">
+                    <label for="pfp-input" class="profile-upload-label w-24 h-24 rounded-3xl border-2 border-dashed border-white/10 flex flex-col items-center justify-center gap-2 overflow-hidden relative">
+                        <img id="pfp-preview" src="" class="absolute inset-0 w-full h-full object-cover hidden">
+                        <i data-lucide="camera" class="text-gray-500"></i>
+                        <span class="text-[10px] text-gray-500">صورة</span>
+                    </label>
+                    <input type="file" id="pfp-input" accept="image/*" class="hidden" onchange="handlePFP(this)">
+                </div>
+                <input type="text" id="user-name-input" placeholder="الاسم الكامل" class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl outline-none focus:border-gold transition-all">
+            </div>
 
             <button onclick="startMakiExperience()" class="w-full mt-10 py-5 rounded-3xl bg-gradient-to-r from-gold to-royal text-black font-black text-sm shadow-[0_15px_40px_rgba(212,175,55,0.3)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-4">
                 <span>فتح القفل</span>
@@ -249,6 +268,42 @@
     </div>
 
     <script>
+        // دالة معالجة صورة البروفايل
+        let userPFPBase64 = "";
+        function handlePFP(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = document.getElementById('pfp-preview');
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    userPFPBase64 = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // دالة بدء التجربة (تسجيل الدخول/الحساب)
+        function startMakiExperience() {
+            const userName = document.getElementById('user-name-input').value;
+            if(!userName) {
+                alert("يرجى إدخال اسمك");
+                return;
+            }
+            
+            // تحديث البيانات في الصفحة
+            document.getElementById('user-name-display').innerText = userName;
+            if(userPFPBase64) {
+                document.getElementById('user-avatar').src = userPFPBase64;
+            }
+
+            // إخفاء بوابة الدخول وإظهار التطبيق
+            document.getElementById('auth-gate').style.display = 'none';
+            const app = document.getElementById('main-app');
+            app.classList.remove('hidden');
+            setTimeout(() => app.style.opacity = '1', 100);
+        }
+
         function toggleGemini() {
             const chat = document.getElementById('gemini-chat-window');
             chat.classList.toggle('active');
@@ -260,12 +315,10 @@
             
             if (input.value.trim() === "") return;
 
-            // إضافة رسالة المستخدم
             chatContent.innerHTML += `<div class="bg-gold/10 p-3 rounded-2xl text-xs text-gold border border-gold/20 text-left">أنت: ${input.value}</div>`;
             
-            // محاكاة استجابة ذكاء اصطناعي
             setTimeout(() => {
-                chatContent.innerHTML += `<div class="bg-white/5 p-3 rounded-2xl text-xs border border-white/10 italic">جيميناي: جاري التفكير في سؤالك... سأقوم بمساعدتك فوراً!</div>`;
+                chatContent.innerHTML += `<div class="bg-white/5 p-3 rounded-2xl text-xs border border-white/10 italic">جيميناي: سأقوم بمساعدتك فوراً يا بطل! جاري معالجة طلبك...</div>`;
                 chatContent.scrollTop = chatContent.scrollHeight;
             }, 1000);
 
