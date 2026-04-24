@@ -2,420 +2,278 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رِكاز | REKAZ ACADEMY - أبو مكي</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>رِكاز | REKAZ 2026</title>
+    
+    <meta name="theme-color" content="#D4AF37">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #030303; color: white; scroll-behavior: smooth; overflow-x: hidden; }
-        .glass { background: rgba(255, 255, 255, 0.01); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.06); }
-        .rekaz-gradient { 
-            background: linear-gradient(135deg, #fff 0%, #a855f7 50%, #4f46e5 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            letter-spacing: 1px;
+        :root { --gold: #D4AF37; --dark: #0A0A0A; }
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background-color: var(--dark); 
+            color: white; 
+            -webkit-tap-highlight-color: transparent;
+            user-select: none; /* حماية المحتوى من النسخ */
         }
-        .card-hover { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
-        .card-hover:hover { transform: translateY(-10px) scale(1.02); border-color: rgba(168, 85, 247, 0.5); box-shadow: 0 25px 50px -12px rgba(168, 85, 247, 0.25); }
-        .btn-premium { background: linear-gradient(135deg, #9333ea 0%, #4f46e5 100%); transition: all 0.3s ease; box-shadow: 0 10px 20px -10px rgba(147, 51, 234, 0.5); }
-        .btn-premium:hover { box-shadow: 0 15px 30px -5px rgba(147, 51, 234, 0.6); transform: translateY(-2px); }
-        .btn-premium:active { transform: translateY(1px); scale: 0.98; }
-        .animate-fade-in { animation: fadeIn 0.8s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-        /* خاص للاختيارات */
-        .option-btn { transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.05); }
-        .option-btn.correct { background-color: rgba(16, 185, 129, 0.1) !important; border-color: rgb(16, 185, 129) !important; color: rgb(16, 185, 129) !important; }
-        .option-btn.wrong { background-color: rgba(239, 68, 68, 0.1) !important; border-color: rgb(239, 68, 68) !important; color: rgb(239, 68, 68) !important; }
-        /* Bento Grid Customization */
-        .bento-item { @apply glass rounded-[2rem] p-8 card-hover relative overflow-hidden; }
+
+        /* تأثيرات مكي الملكية */
+        .maki-gradient {
+            background: linear-gradient(135deg, #D4AF37 0%, #F9F4E8 50%, #B8860B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 2rem;
+        }
+
+        .btn-maki {
+            background: linear-gradient(90deg, #B8860B, #D4AF37);
+            color: black;
+            font-weight: 900;
+            transition: 0.4s all cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .btn-maki:active { transform: scale(0.95); }
+
+        /* أنيميشن الدخول */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .reveal { animation: fadeInUp 0.8s forwards; }
+
+        /* إخفاء السكرول بار */
+        ::-webkit-scrollbar { width: 0px; }
     </style>
 </head>
-<body class="pb-32 min-h-screen relative">
+<body class="min-h-screen">
 
-    <div id="auth-screen" class="min-h-screen flex items-center justify-center p-6 animate-fade-in z-50 relative">
-        <div class="absolute -top-40 -left-40 w-96 h-96 bg-purple-600/10 blur-[120px]"></div>
-        <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-indigo-600/10 blur-[120px]"></div>
-        
-        <div class="glass w-full max-w-lg p-12 rounded-[3rem] text-center shadow-2xl relative border border-white/5">
-            <i data-lucide="gem" class="text-purple-500 mx-auto mb-4" size="48"></i>
-            <h1 class="text-6xl font-black mb-2 rekaz-gradient uppercase tracking-wider">رِكاز</h1>
-            <p class="text-[10px] tracking-[0.4em] text-gray-500 mb-10 font-light uppercase">Rekaz Academy Platform</p>
+    <div id="auth-screen" class="fixed inset-0 z-[100] bg-black flex items-center justify-center p-6">
+        <div class="glass-panel w-full max-w-md p-10 text-center reveal relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 w-32 h-32 bg-gold/10 blur-3xl rounded-full"></div>
             
-            <div class="space-y-6 text-right">
-                <div class="relative">
-                    <label class="text-xs text-gray-500 mr-4 mb-2 block tracking-wide">اختر المسار الدراسي</label>
-                    <select id="user-system" class="w-full p-5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-purple-500 text-white appearance-none transition-all font-semibold cursor-pointer text-sm">
-                        <option value="general" class="bg-[#030303]">الثانوية العامة (العام)</option>
-                        <option value="azhar" class="bg-[#030303]">الثانوية الأزهرية (الشريف)</option>
-                    </select>
-                    <i data-lucide="chevron-down" class="absolute left-5 top-12 text-gray-600" size="18"></i>
-                </div>
-                <div class="relative">
-                    <label class="text-xs text-gray-500 mr-4 mb-2 block tracking-wide">الاسم الكامل</label>
-                    <input type="text" id="user-name" placeholder="عبد الرحمن مكي..." class="w-full p-5 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-purple-500 text-white transition-all text-sm">
-                </div>
-                <button onclick="login()" class="w-full btn-premium py-5 rounded-2xl font-black text-sm uppercase tracking-wider flex items-center justify-center gap-3 active:scale-95">
-                    <i data-lucide="log-in" size="18"></i>
-                    دخول المنصة
-                </button>
+            <h1 class="text-6xl font-black maki-gradient mb-2">رِكاز</h1>
+            <p class="text-gray-500 text-xs tracking-widest mb-8 font-bold">نظام مكي التعليمي 2026</p>
+
+            <div id="auth-tabs" class="flex bg-white/5 p-1 rounded-2xl mb-6">
+                <button onclick="toggleAuth('login')" id="btn-login" class="flex-1 py-3 rounded-xl font-bold transition-all bg-gold text-black">دخول</button>
+                <button onclick="toggleAuth('signup')" id="btn-signup" class="flex-1 py-3 rounded-xl font-bold transition-all text-gray-400">حساب جديد</button>
             </div>
+
+            <div class="space-y-4" id="auth-inputs">
+                </div>
+
+            <button onclick="handleAuth()" class="w-full btn-maki py-4 mt-8 rounded-2xl flex items-center justify-center gap-3 shadow-lg shadow-gold/20">
+                <span id="auth-action-text">دخول النادي الملكي</span>
+                <i data-lucide="shield-check"></i>
+            </button>
         </div>
     </div>
 
-    <div id="main-content" class="hidden animate-fade-in relative z-10">
-        <header class="p-8 flex justify-between items-center max-w-7xl mx-auto mt-4 glass rounded-3xl border border-white/5 shadow-lg">
+    <div id="app-content" class="hidden opacity-0 transition-opacity duration-1000">
+        
+        <header class="sticky top-0 z-50 glass-panel !rounded-none !border-t-0 !border-x-0 p-6 flex justify-between items-center bg-black/60">
             <div class="flex items-center gap-4">
-                <div class="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 shadow-inner">
-                    <i data-lucide="shield-check" class="text-purple-400" size="28"></i>
+                <div class="relative">
+                    <img id="user-avatar" src="" class="w-14 h-14 rounded-2xl object-cover border-2 border-gold shadow-gold/30 shadow-md">
+                    <div class="absolute -bottom-1 -right-1 bg-green-500 w-4 h-4 rounded-full border-2 border-black"></div>
                 </div>
                 <div>
-                    <h2 id="welcome-msg" class="text-2xl font-extrabold tracking-tight">مرحباً</h2>
-                    <div class="flex items-center gap-2.5 mt-1.5">
-                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <p id="system-badge" class="text-gray-400 text-[11px] uppercase tracking-widest font-bold"></p>
-                    </div>
+                    <h2 id="display-name" class="font-black text-lg"></h2>
+                    <span id="display-rank" class="text-[10px] bg-gold/10 text-gold px-2 py-0.5 rounded-full font-black border border-gold/20">طالب ملكي</span>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
-                <button class="p-4 rounded-xl glass hover:bg-white/5 text-gray-500 hover:text-white transition-all"><i data-lucide="bell" size="20"></i></button>
-                <div class="w-14 h-14 rounded-2xl glass flex items-center justify-center border border-purple-500/20 shadow-lg">
-                    <i data-lucide="user" class="text-purple-400"></i>
-                </div>
-            </div>
+            <button onclick="location.reload()" class="p-3 bg-red-500/10 text-red-500 rounded-xl"><i data-lucide="power"></i></button>
         </header>
 
-        <main class="max-w-7xl mx-auto p-6 md:p-8 space-y-16 mt-10">
+        <main class="p-6 space-y-10 pb-32">
             
-            <section id="view-dashboard" class="space-y-12">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="bento-item lg:col-span-2 border-l-4 border-l-purple-600 bg-gradient-to-br from-purple-900/10 to-transparent">
-                        <div class="flex justify-between items-center mb-8">
-                            <h3 class="text-2xl font-extrabold tracking-tight flex items-center gap-3"><i data-lucide="target" class="text-purple-500"></i> خريطة الإنجاز</h3>
-                            <span class="text-xs text-purple-400 glass px-4 py-1.5 rounded-full font-bold uppercase tracking-widest">المعدل الحالي</span>
-                        </div>
-                        <div class="w-full bg-white/5 h-3 rounded-full mt-10 overflow-hidden relative shadow-inner">
-                            <div class="bg-gradient-to-r from-purple-600 to-indigo-500 h-full w-[72%] rounded-full shadow-[0_0_20px_rgba(168,85,247,0.4)]"></div>
-                        </div>
-                        <div class="flex justify-between items-center mt-4">
-                            <p class="text-sm text-gray-400 font-medium">أنجزت <span class="text-white font-bold text-lg">72%</span> من محتوى هذا الفصل.</p>
-                            <button class="text-xs text-purple-400 flex items-center gap-1.5 hover:text-white transition"><i data-lucide="arrow-left" size="14"></i> التفاصيل</button>
-                        </div>
-                    </div>
+            <section class="reveal">
+                <h3 class="text-3xl font-black italic mb-2">أهلاً بك في <span class="maki-gradient">رِكاز</span></h3>
+                <p class="text-gray-500 text-sm font-bold">اختر مادتك وابدأ رحلة التفوق اليوم.</p>
+            </section>
 
-                    <div class="bento-item border-r-4 border-r-indigo-600 bg-gradient-to-bl from-indigo-900/10 to-transparent">
-                        <i data-lucide="crown" class="text-indigo-400 mb-6" size="32"></i>
-                        <h3 class="text-xl font-bold">صرح المتفوقين</h3>
-                        <p class="text-sm text-gray-400 mt-4 leading-relaxed">أنت الآن في المرتبة <span class="text-white font-black text-2xl mx-1">#12</span> على مستوى المنصة لهذا المسار.</p>
-                    </div>
+            <section>
+                <div class="flex items-center justify-between mb-6">
+                    <h4 class="font-black text-xl border-r-4 border-gold pr-3">المكتبة الرقمية</h4>
+                    <span id="stage-badge" class="text-[10px] text-gray-400 font-bold"></span>
                 </div>
-
-                <div class="flex items-center gap-6 mb-8 mt-16">
-                    <h3 class="text-3xl font-black flex items-center gap-4"><i data-lucide="book-open-check" class="text-purple-500"></i> المكنون المعرفي</h3>
-                    <div class="h-[1px] flex-1 bg-white/5"></div>
-                </div>
-
-                <div id="subjects-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div id="library-grid" class="grid grid-cols-2 gap-4">
                     </div>
             </section>
 
-            <section id="view-quiz" class="hidden max-w-4xl mx-auto animate-fade-in space-y-8">
-                <div id="quiz-active-state" class="glass p-12 rounded-[3rem] border border-purple-500/10 relative shadow-2xl space-y-12">
-                    <div class="flex justify-between items-center pb-6 border-b border-white/5">
-                        <div class="flex flex-col gap-1 text-right">
-                            <span class="text-xs text-gray-500 uppercase tracking-[0.2em]">اختبار الملاءمة العلمية</span>
-                            <span id="quiz-question-number" class="text-purple-400 font-black text-lg">سؤال 1 / 2</span>
-                        </div>
-                        <div class="px-5 py-2.5 bg-red-500/5 rounded-2xl border border-red-500/10 flex items-center gap-3">
-                            <i data-lucide="timer" class="text-red-500animate-pulse" size="18"></i>
-                            <span id="timer" class="font-mono text-red-500 font-bold text-lg">10:00</span>
-                        </div>
-                    </div>
-                    <h3 id="question-text" class="text-3xl font-bold leading-snug text-right text-white/95">...</h3>
-                    <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        </div>
-                    <div class="pt-8 border-t border-white/5">
-                        <button id="next-btn" onclick="nextQuestion()" class="w-full py-5 btn-premium rounded-2xl font-black shadow-xl disabled:opacity-50 disabled:cursor-not-allowed text-sm uppercase tracking-wider flex items-center justify-center gap-3 transition-all" disabled>
-                            تأكيد الإجابة والانتقال
-                            <i data-lucide="arrow-left" size="18"></i>
-                        </button>
-                    </div>
+            <div id="quiz-container" class="hidden fixed inset-0 z-[60] bg-black p-6 flex flex-col">
+                <div class="flex justify-between items-center mb-8">
+                    <button onclick="closeQuiz()" class="text-gray-400"><i data-lucide="x-circle"></i></button>
+                    <div id="quiz-timer" class="text-red-500 font-black text-xl font-mono">10:00</div>
                 </div>
-
-                <div id="quiz-result-state" class="hidden glass p-16 rounded-[3rem] text-center border-2 border-emerald-500/20 animate-fade-in shadow-2xl relative overflow-hidden">
-                    <div class="absolute -top-32 -left-32 w-80 h-80 bg-emerald-600/10 blur-[100px]"></div>
-                    <i data-lucide="award" class="text-emerald-500 mx-auto mb-6" size="64"></i>
-                    <h3 class="text-4xl font-black text-emerald-400 mb-3">تم صقل العقل بنجاح</h3>
-                    <p class="text-gray-400 mb-10 text-sm italic">"لقد استخرجت مكنونك المعرفي في هذا الاختبار"</p>
-                    <div class="flex items-center justify-center gap-6 glass max-w-sm mx-auto p-6 rounded-2xl border border-white/5 mb-12 shadow-inner">
-                        <span class="text-xs text-gray-500 tracking-wider">النتيجة النهائية:</span>
-                        <p class="text-5xl font-black font-mono text-white tracking-tight"><span id="final-score">0</span> / 2</p>
-                    </div>
-                    <button onclick="showView('dashboard')" class="px-10 py-4 glass rounded-xl text-sm font-semibold hover:bg-white/5 transition flex items-center gap-2 mx-auto">
-                        <i data-lucide="layout-grid" size="16"></i> العودة للرئيسية
-                    </button>
+                <div id="quiz-box" class="glass-panel p-8 flex-1 flex flex-col justify-center text-center">
+                    <h2 id="q-text" class="text-2xl font-bold mb-10 leading-relaxed"></h2>
+                    <div id="q-options" class="grid gap-4"></div>
                 </div>
-            </section>
-
-            <section id="view-summaries" class="hidden animate-fade-in space-y-12">
-                <div class="flex items-center gap-6 mb-12">
-                    <h3 class="text-3xl font-black flex items-center gap-4"><i data-lucide="layers-3" class="text-purple-500"></i> تلخيصات رِكاز الماسية</h3>
-                    <div class="h-[1px] flex-1 bg-white/5"></div>
-                </div>
-                <div id="summaries-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    </div>
-            </section>
+                <button id="next-q-btn" onclick="nextQuestion()" class="w-full btn-maki py-5 mt-6 rounded-3xl opacity-50" disabled>السؤال التالي</button>
+            </div>
 
         </main>
 
-        <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 glass px-12 py-5 rounded-[2.5rem] flex gap-12 items-center shadow-2xl border border-white/5 z-40 transition-all hover:scale-105 hover:border-purple-500/20">
-            <button onclick="showView('dashboard')" class="nav-link active text-purple-400 hover:scale-110 transition-transform"><i data-lucide="layout-grid" size="24"></i></button>
-            <button onclick="showView('summaries')" class="nav-link text-gray-500 hover:text-white hover:scale-110 transition-transform"><i data-lucide="layers-3" size="24"></i></button>
-            <button onclick="showView('quiz-start')" class="nav-link text-gray-500 hover:text-white hover:scale-110 transition-transform"><i data-lucide="brain-circuit" size="24"></i></button>
-            <button onclick="shareProgress()" class="text-gray-500 hover:text-white hover:scale-110 transition-transform"><i data-lucide="share-2" size="24"></i></button>
+        <nav class="fixed bottom-6 left-6 right-6 h-20 glass-panel flex items-center justify-around px-4 z-50 shadow-2xl">
+            <button onclick="showTab('books')" class="nav-item text-gold transition-all"><i data-lucide="home"></i></button>
+            <button onclick="alert('قسم التلخيصات قريباً في تحديث مكي القادم!')" class="nav-item text-gray-500"><i data-lucide="file-text"></i></button>
+            <button onclick="alert('مركز الدعم الفني لمكي متاح 24 ساعة')" class="nav-item text-gray-500"><i data-lucide="message-circle"></i></button>
         </nav>
-
-        <footer class="absolute bottom-4 left-0 w-full text-center py-2 z-0 opacity-40">
-            <p class="text-[10px] tracking-wider text-gray-600 font-light uppercase">تطوير عبدو مكي</p>
-        </footer>
     </div>
 
     <script>
-        // بيانات المواد والأسئلة (ديمو)
-        const subjectsData = {
-            general: ['الفيزياء الحديثة', 'الكيمياء العضوية', 'الأحياء', 'الرياضيات التطبيقية'],
-            azhar: ['الفقه المقارن', 'تفسير القرآن', 'الحديث النبوي', 'النحو والصرف']
-        };
-
-        const questionsData = {
-            general: [
-                { q: "ما هي القيمة التقريبية لسرعة الضوء في الفراغ؟", options: ["300,000 كم/ث", "150,000 كم/ث", "500,000 كم/ث", "700,000 كم/ث"], correct: 0 },
-                { q: "العنصر الأساسي في جميع المركبات العضوية هو؟", options: ["الأكسجين", "النيتروجين", "الكربون", "الهيدروجين"], correct: 2 }
-            ],
-            azhar: [
-                { q: "ما هو العلم الذي يبحث في أحكام المكلفين الشرعية؟", options: ["الفقه", "الحديث", "التفسير", "التوحيد"], correct: 0 },
-                { q: "ما هو الأصل الأول من أصول الفقه المتفق عليها؟", options: ["الإجماع", "القياس", "السنة", "القرآن الكريم"], correct: 3 }
+        // قاعدة البيانات المتطورة
+        const DATA = {
+            stages: ["رابعة ابتدائي", "خامسة ابتدائي", "سادسة ابتدائي", "أولى إعدادي", "تانية إعدادي", "تالتة إعدادي", "أولى ثانوي", "تانية ثانوي", "تالتة ثانوي"],
+            subjects: {
+                elementary: ["اللغة العربية", "الرياضيات", "العلوم", "الدراسات"],
+                secondary: ["الفيزياء", "الكيمياء", "الأحياء", "التاريخ", "الجغرافيا", "الفلسفة"]
+            },
+            questions: [
+                { q: "ما هي عاصمة جمهورية مصر العربية؟", o: ["المنصورة", "القاهرة", "الإسكندرية", "الأقصر"], c: 1 },
+                { q: "أكبر كوكب في المجموعة الشمسية هو؟", o: ["الأرض", "المريخ", "المشتري", "زحل"], c: 2 }
             ]
         };
 
-        // إدارة الحالة
-        let currentUser = null;
-        let activeQuizQuestions = [];
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let selectedOptionIndex = null;
-        let timerInterval = null;
+        let currentAuthMode = 'login';
+        let userPfp = "https://ui-avatars.com/api/?background=D4AF37&color=000&size=256";
 
-        // الدخول
-        function login() {
-            const name = document.getElementById('user-name').value;
-            const system = document.getElementById('user-system').value;
+        // تبديل واجهة الدخول
+        function toggleAuth(mode) {
+            currentAuthMode = mode;
+            const inputs = document.getElementById('auth-inputs');
+            document.getElementById('btn-login').className = mode === 'login' ? 'flex-1 py-3 rounded-xl font-bold bg-gold text-black' : 'flex-1 py-3 rounded-xl font-bold text-gray-400';
+            document.getElementById('btn-signup').className = mode === 'signup' ? 'flex-1 py-3 rounded-xl font-bold bg-gold text-black' : 'flex-1 py-3 rounded-xl font-bold text-gray-400';
             
-            if(!name || name.trim().length < 3) return alert("من فضلك أدخل اسمك الكامل لتسجيله في سجلات رِكاز (على الأقل 3 حروف)");
-            
-            currentUser = { name, system };
-            document.getElementById('auth-screen').classList.add('hidden');
-            document.getElementById('main-content').classList.remove('hidden');
-            
-            document.getElementById('welcome-msg').innerText = `مرحباً بك، ${name}`;
-            document.getElementById('system-badge').innerText = system === 'azhar' ? 'مَسار الأزهر الشريف' : 'مَسار الثانوية العامة';
-            
-            renderSubjects();
-            renderSummaries(); // NEW
-            lucide.createIcons();
-        }
-
-        // عرض المواد
-        function renderSubjects() {
-            const grid = document.getElementById('subjects-grid');
-            grid.innerHTML = '';
-            subjectsData[currentUser.system].forEach(sub => {
-                grid.innerHTML += `
-                    <div class="glass p-8 rounded-[2rem] text-center card-hover transition-all cursor-pointer group">
-                        <div class="w-16 h-16 bg-gradient-to-tr from-purple-600/20 to-indigo-600/20 rounded-2xl mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform shadow-inner border border-white/5 relative">
-                           <div class="absolute inset-0 rounded-2xl blur-md bg-purple-500/10 group-hover:bg-purple-500/20"></div>
-                            <i data-lucide="book-marked" class="text-purple-400 group-hover:text-purple-300 relative z-10"></i>
-                        </div>
-                        <h4 class="font-extrabold text-sm tracking-tight">${sub}</h4>
-                        <div class="w-10 h-1 bg-white/5 mx-auto mt-4 rounded-full group-hover:bg-purple-500/40 transition"></div>
-                    </div>
+            if(mode === 'login') {
+                inputs.innerHTML = `
+                    <input type="text" id="u-name-in" placeholder="اسم المستخدم" class="w-full p-4 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-gold transition-all">
+                    <input type="password" id="u-pass-in" placeholder="كلمة المرور" class="w-full p-4 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-gold transition-all">
                 `;
-            });
-            lucide.createIcons();
-        }
-
-        // عرض التلخيصات (NEW)
-        function renderSummaries() {
-            const grid = document.getElementById('summaries-grid');
-            grid.innerHTML = '';
-            const summaries = [
-                { title: 'خلاصة الفيزياء الحديثة', size: '1.2 MB', subject: 'الفيزياء' },
-                { title: 'كيمياء عضوية - الباب الأول', size: '2.5 MB', subject: 'الكيمياء' },
-                { title: 'قواعد النحو الشاملة', size: '800 KB', subject: 'اللغة العربية' },
-                { title: 'ملخص البلاغة - الترم الأول', size: '1.5 MB', subject: 'اللغة العربية' },
-            ]; // ديمو
-
-            summaries.forEach(s => {
-                grid.innerHTML += `
-                    <div class="glass p-6 rounded-3xl border border-white/5 flex gap-5 items-center card-hover">
-                        <div class="w-16 h-16 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400">
-                           <i data-lucide="file-text" size="24"></i>
-                        </div>
-                        <div class="flex-1">
-                            <span class="text-[10px] text-gray-500 uppercase tracking-wider">${s.subject}</span>
-                            <h4 class="font-bold text-sm tracking-tight mt-0.5">${s.title}</h4>
-                            <div class="flex items-center gap-3 mt-3 text-gray-400 text-xs">
-                                <span class="font-mono text-xs">${s.size}</span>
-                                <button class="hover:text-white transition"><i data-lucide="download" size="14"></i></button>
-                                <button class="hover:text-white transition"><i data-lucide="eye" size="14"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-            lucide.createIcons();
-        }
-
-        // التنقل بين الصفحات
-        function showView(view) {
-            document.getElementById('view-dashboard').classList.add('hidden');
-            document.getElementById('view-quiz').classList.add('hidden');
-            document.getElementById('view-summaries').classList.add('hidden');
-            
-            // تحديث حالة الـ Navbar
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('text-purple-400', 'active'));
-            document.querySelectorAll('.nav-link').forEach(link => link.classList.add('text-gray-500'));
-
-            if(view === 'dashboard') {
-                document.getElementById('view-dashboard').classList.remove('hidden');
-                document.querySelector('[onclick="showView(\'dashboard\')"]').classList.add('text-purple-400', 'active');
-                document.querySelector('[onclick="showView(\'dashboard\')"]').classList.remove('text-gray-500');
-                clearInterval(timerInterval);
-            } else if (view === 'summaries') {
-                document.getElementById('view-summaries').classList.remove('hidden');
-                document.querySelector('[onclick="showView(\'summaries\')"]').classList.add('text-purple-400', 'active');
-                document.querySelector('[onclick="showView(\'summaries\')"]').classList.remove('text-gray-500');
-                clearInterval(timerInterval);
-            } else if (view === 'quiz-start') {
-                document.getElementById('view-quiz').classList.remove('hidden');
-                document.querySelector('[onclick="showView(\'quiz-start\')"]').classList.add('text-purple-400', 'active');
-                document.querySelector('[onclick="showView(\'quiz-start\')"]').classList.remove('text-gray-500');
-                resetAndStartQuiz();
-            }
-        }
-
-        // نظام الامتحانات
-        function resetAndStartQuiz() {
-            activeQuizQuestions = questionsData[currentUser.system] || [];
-            currentQuestionIndex = 0;
-            score = 0;
-            selectedOptionIndex = null;
-            document.getElementById('quiz-result-state').classList.add('hidden');
-            document.getElementById('quiz-active-state').classList.remove('hidden');
-            document.getElementById('next-btn').disabled = true;
-            renderQuestion();
-            startTimer(600); // 10 دقائق
-        }
-
-        function renderQuestion() {
-            const q = activeQuizQuestions[currentQuestionIndex];
-            if (!q) {
-                endQuiz();
-                return;
-            }
-
-            document.getElementById('quiz-question-number').innerText = `سؤال ${currentQuestionIndex + 1} / ${activeQuizQuestions.length}`;
-            document.getElementById('question-text').innerText = q.q;
-            document.getElementById('next-btn').disabled = true;
-            document.getElementById('next-btn').innerHTML = currentQuestionIndex === activeQuizQuestions.length - 1 ? `
-                    عرض النتيجة
-                    <i data-lucide="check-circle-2" size="18"></i>
-            ` : `
-                    تأكيد الإجابة والانتقال
-                    <i data-lucide="arrow-left" size="18"></i>
-            `;
-            lucide.createIcons();
-
-            const container = document.getElementById('options-container');
-            container.innerHTML = '';
-            q.options.forEach((opt, i) => {
-                container.innerHTML += `
-                    <button onclick="selectOption(${i})" class="option-btn w-full p-6 rounded-2xl bg-white/5 hover:bg-purple-600/5 hover:border-purple-500/20 text-right transition-all group flex justify-between items-center active:scale-95 shadow-md">
-                        <span class="text-sm font-semibold tracking-tight text-white/90">${opt}</span>
-                        <div class="w-2.5 h-2.5 rounded-full border border-white/20 group-hover:bg-purple-500 group-hover:border-purple-500 transition-all shadow-inner"></div>
-                    </button>
-                `;
-            });
-            selectedOptionIndex = null;
-        }
-
-        function selectOption(index) {
-            if(selectedOptionIndex !== null) return; // منع تغيير الاختيار
-            selectedOptionIndex = index;
-            const q = activeQuizQuestions[currentQuestionIndex];
-            const options = document.getElementById('options-container').children;
-
-            // التحقق من الإجابة
-            if (index === q.correct) {
-                options[index].classList.add('correct');
-                score++;
-                options[index].innerHTML += '<i data-lucide="check" class="text-emerald-500 ml-3" size="18"></i>';
             } else {
-                options[index].classList.add('wrong');
-                options[q.correct].classList.add('correct'); // إظهار الإجابة الصحيحة
-                 options[index].innerHTML += '<i data-lucide="x" class="text-red-500 ml-3" size="18"></i>';
-                 options[q.correct].innerHTML += '<i data-lucide="check" class="text-emerald-500 ml-3" size="18"></i>';
+                inputs.innerHTML = `
+                    <div class="flex justify-center mb-4">
+                        <label class="w-20 h-20 rounded-2xl border-2 border-dashed border-gold/30 flex items-center justify-center cursor-pointer overflow-hidden">
+                            <img id="temp-pfp" class="hidden w-full h-full object-cover">
+                            <i id="cam-icon" data-lucide="camera" class="text-gold"></i>
+                            <input type="file" class="hidden" onchange="previewImg(this)">
+                        </label>
+                    </div>
+                    <input type="text" id="u-name-in" placeholder="اسمك بالكامل" class="w-full p-4 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-gold transition-all">
+                    <select id="u-stage-in" class="w-full p-4 bg-white/5 border border-white/10 rounded-2xl outline-none focus:border-gold text-gray-400">
+                        ${DATA.stages.map(s => `<option value="${s}">${s}</option>`).join('')}
+                    </select>
+                `;
             }
             lucide.createIcons();
-            document.getElementById('next-btn').disabled = false;
         }
 
-        function nextQuestion() {
-            currentQuestionIndex++;
-            renderQuestion();
-        }
-
-        function endQuiz() {
-            clearInterval(timerInterval);
-            document.getElementById('quiz-active-state').classList.add('hidden');
-            document.getElementById('quiz-result-state').classList.remove('hidden');
-            document.getElementById('final-score').innerText = score;
-        }
-
-        // المؤقت
-        function startTimer(duration) {
-            let timer = duration, minutes, seconds;
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                minutes = parseInt(timer / 60, 10);
-                seconds = parseInt(timer % 60, 10);
-
-                minutes = minutes < 10 ? "0" + minutes : minutes;
-                seconds = seconds < 10 ? "0" + seconds : seconds;
-
-                document.getElementById('timer').textContent = minutes + ":" + seconds;
-
-                if (--timer < 0) {
-                    clearInterval(timerInterval);
-                    alert("انتهى وقت الاختبار المحدد، سيتم احتساب النتيجة الحالية.");
-                    endQuiz();
+        function previewImg(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    userPfp = e.target.result;
+                    document.getElementById('temp-pfp').src = e.target.result;
+                    document.getElementById('temp-pfp').classList.remove('hidden');
+                    document.getElementById('cam-icon').classList.add('hidden');
                 }
-            }, 1000);
-        }
-
-        // المشاركة
-        function shareProgress() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'إنجازي في رِكاز - REKAZ ACADEMY',
-                    text: `أقوم بصقل عقلي في منصة رِكاز التعليمية، نتيجتي اليوم مذهلة!`,
-                    url: window.location.href
-                });
-            } else {
-                alert("خاصية المشاركة غير مدعومة في متصفحك الحالي.");
+                reader.readAsDataURL(input.files[0]);
             }
         }
 
-        lucide.createIcons();
+        // معالجة الدخول
+        function handleAuth() {
+            const name = document.getElementById('u-name-in').value;
+            if(!name) return alert("أدخل اسمك يا بطل!");
+
+            const stage = document.getElementById('u-stage-in')?.value || "الثالث الثانوي";
+            
+            document.getElementById('display-name').innerText = name;
+            document.getElementById('display-rank').innerText = stage;
+            document.getElementById('stage-badge').innerText = `المنهج المعتمد لـ ${stage}`;
+            document.getElementById('user-avatar').src = userPfp;
+
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('app-content').classList.remove('hidden');
+            setTimeout(() => { document.getElementById('app-content').classList.add('opacity-100'); }, 50);
+            
+            renderLibrary(stage);
+        }
+
+        function renderLibrary(stage) {
+            const grid = document.getElementById('library-grid');
+            const list = stage.includes("ابتدائي") ? DATA.subjects.elementary : DATA.subjects.secondary;
+            
+            grid.innerHTML = list.map(sub => `
+                <div onclick="startQuiz('${sub}')" class="glass-panel p-6 text-center group hover:bg-gold/5 transition-all">
+                    <div class="w-14 h-14 bg-gold/10 rounded-2xl mx-auto mb-4 flex items-center justify-center text-gold group-hover:scale-110 transition-all">
+                        <i data-lucide="book-open"></i>
+                    </div>
+                    <h5 class="font-black text-xs mb-2">${sub}</h5>
+                    <button class="text-[8px] bg-white/10 px-3 py-1 rounded-full text-gray-400 font-bold uppercase">فتح الكتاب</button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        // نظام الاختبارات
+        let currentSub = '';
+        let qIndex = 0;
+
+        function startQuiz(sub) {
+            currentSub = sub;
+            qIndex = 0;
+            document.getElementById('quiz-container').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = DATA.questions[qIndex];
+            if(!q) {
+                alert("تهانينا! لقد أتممت اختبار " + currentSub);
+                return closeQuiz();
+            }
+            document.getElementById('q-text').innerText = q.q;
+            document.getElementById('q-options').innerHTML = q.o.map((o, i) => `
+                <button onclick="checkAnswer(${i}, ${q.c})" class="q-btn w-full p-5 rounded-2xl border border-white/5 bg-white/5 text-right font-bold transition-all">
+                    ${o}
+                </button>
+            `).join('');
+            document.getElementById('next-q-btn').disabled = true;
+            document.getElementById('next-q-btn').classList.add('opacity-50');
+        }
+
+        function checkAnswer(idx, correct) {
+            const btns = document.querySelectorAll('.q-btn');
+            btns.forEach(b => b.disabled = true);
+            if(idx === correct) {
+                btns[idx].classList.add('bg-green-500/20', 'border-green-500', 'text-green-500');
+            } else {
+                btns[idx].classList.add('bg-red-500/20', 'border-red-500', 'text-red-500');
+                btns[correct].classList.add('bg-green-500/20', 'border-green-500');
+            }
+            document.getElementById('next-q-btn').disabled = false;
+            document.getElementById('next-q-btn').classList.remove('opacity-50');
+        }
+
+        function nextQuestion() { qIndex++; showQuestion(); }
+        function closeQuiz() { document.getElementById('quiz-container').classList.add('hidden'); }
+
+        // تشغيل أولي
+        toggleAuth('login');
     </script>
 </body>
 </html>
