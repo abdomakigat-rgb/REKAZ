@@ -1,64 +1,131 @@
 {
-  "rekaz_metadata": {
-    "version": "2.0.0",
-    "last_update": "2026-04-24",
-    "platform": "REKAZ BY MAKI"
+  "platform_info": {
+    "name": "NEO-REKAZ 2026",
+    "version": "4.5.0",
+    "developer": "Ab Maki Experiments",
+    "last_sync": "2026-04-24T20:00:00Z",
+    "motto": "بناء العقول بأسلوب ملكي"
   },
-  "educational_stages": [
+  "educational_sectors": [
     {
-      "id": "primary_4",
-      "name": "رابعة ابتدائي",
-      "category": "elementary",
-      "books": [
-        { "subject": "اللغة العربية", "pdf_url": "books/p4/arabic.pdf", "icon": "book" },
-        { "subject": "الرياضيات", "pdf_url": "books/p4/math.pdf", "icon": "calculator" },
-        { "subject": "العلوم", "pdf_url": "books/p4/science.pdf", "icon": "microscope" }
+      "id": "sec_general",
+      "title": "الثانوية العامة",
+      "years": [
+        {
+          "grade": "3s",
+          "name": "الصف الثالث الثانوي",
+          "subjects": [
+            {
+              "id": "ara_3s",
+              "name": "اللغة العربية",
+              "teacher": "نخبة خبراء مكي",
+              "pdf_path": "files/pdf/arabic_3s_2026.pdf",
+              "cover": "assets/covers/arabic.jpg",
+              "tags": ["إجباري", "أدبي", "علمي"],
+              "stats": { "downloads": 5420, "rating": 4.9 }
+            },
+            {
+              "id": "phy_3s",
+              "name": "الفيزياء",
+              "teacher": "فريق ركاز العلمي",
+              "pdf_path": "files/pdf/physics_3s.pdf",
+              "cover": "assets/covers/physics.jpg",
+              "tags": ["علمي"],
+              "stats": { "downloads": 3100, "rating": 4.8 }
+            }
+          ]
+        }
       ]
     },
     {
-      "id": "secondary_3",
-      "name": "تالتة ثانوي",
-      "category": "secondary",
-      "books": [
-        { "subject": "فيزياء", "pdf_url": "books/s3/physics.pdf", "icon": "zap" },
-        { "subject": "كيمياء", "pdf_url": "books/s3/chemistry.pdf", "icon": "test-tube" },
-        { "subject": "أحياء", "pdf_url": "books/s3/biology.pdf", "icon": "dna" },
-        { "subject": "تاريخ", "pdf_url": "books/s3/history.pdf", "icon": "landmark" }
+      "id": "sec_azhar",
+      "title": "الثانوية الأزهرية",
+      "years": [
+        {
+          "grade": "3az",
+          "name": "الثالث الثانوي الأزهري",
+          "subjects": [
+            {
+              "id": "fiq_3az",
+              "name": "الفقه الشافعي",
+              "pdf_path": "files/pdf/fiqh_shafii.pdf",
+              "tags": ["شرعي"],
+              "stats": { "downloads": 1200, "rating": 5.0 }
+            },
+            {
+              "id": "had_3az",
+              "name": "الحديث الشريف",
+              "pdf_path": "files/pdf/hadith_3az.pdf",
+              "tags": ["شرعي"],
+              "stats": { "downloads": 980, "rating": 4.7 }
+            }
+          ]
+        }
       ]
     }
   ],
-  "quiz_bank": {
-    "اللغة العربية": [
+  "quiz_system": {
+    "categories": ["التحدي اليومي", "اختبارات الفصول", "مسابقات الأوائل"],
+    "questions": [
       {
-        "q": "ما هو جمع كلمة 'رِكاز'؟",
-        "options": ["ركائز", "ركزات", "أركز", "رُكُز"],
-        "correct": 0
-      }
-    ],
-    "فيزياء": [
-      {
-        "q": "ما هي وحدة قياس القوة الكهربائية الدافعة؟",
-        "options": ["الأمبير", "الأوم", "الفولت", "الوات"],
-        "correct": 2
+        "id": "q_1001",
+        "subject": "فيزياء",
+        "level": "Hard",
+        "text": "ماذا يحدث لعزم الازدواج عندما يكون الملف موازياً لخطوط الفيض؟",
+        "options": ["ينعدم", "يكون قيمة عظمى", "يقل للنصف", "لا يتأثر"],
+        "answer": 1,
+        "explanation": "يكون عزم الازدواج قيمة عظمى عندما تكون الزاوية بين العمودي على الملف والمجال 90 درجة."
       },
       {
-        "q": "تقاس المقاومة الكهربائية بجهاز؟",
-        "options": ["الاميتر", "الفولتميتر", "الأوميتر", "الواتميتر"],
-        "correct": 2
-      }
-    ],
-    "كيمياء": [
-      {
-        "q": "ما هو العدد الذري لعنصر الهيدروجين؟",
-        "options": ["1", "2", "6", "8"],
-        "correct": 0
+        "id": "q_1002",
+        "subject": "عربي",
+        "level": "Medium",
+        "text": "ما إعراب كلمة 'ركاز' في جملة: إنَّ ركازاً أملُ الطلابِ؟",
+        "options": ["خبر إن", "اسم إن منصوب", "مبتدأ", "فاعل"],
+        "answer": 1
       }
     ]
   },
-  "maki_announcements": [
-    "أهلاً بك في النسخة المطورة من رِكاز 2026",
-    "تم إضافة كتب الفصل الدراسي الثاني لجميع المراحل",
-    "تحدي مكي القادم في مادة الفيزياء يوم الجمعة!"
-  ]
+  "live_schedule": [
+    {
+      "day": "السبت",
+      "sessions": [
+        { "time": "19:00", "subject": "لغة عربية", "link": "live/ara-sat" },
+        { "time": "21:00", "subject": "كيمياء", "link": "live/chem-sat" }
+      ]
+    },
+    {
+      "day": "الثلاثاء",
+      "sessions": [
+        { "time": "20:00", "subject": "فيزياء", "link": "live/phy-tue" }
+      ]
+    }
+  ],
+  "honor_roll": [
+    { "rank": 1, "name": "محمد عبدالله", "points": 15400, "badge": "Elite" },
+    { "rank": 2, "name": "أحمد إبراهيم", "points": 14200, "badge": "Gold" },
+    { "rank": 3, "name": "محمود خالد", "points": 13950, "badge": "Silver" }
+  ],
+  "gamification": {
+    "badges": [
+      { "id": "b1", "name": "عاشق المعرفة", "requirement": "تحميل 10 كتب" },
+      { "id": "b2", "name": "قناص الأسئلة", "requirement": "حل 50 سؤال صح" },
+      { "id": "b3", "name": "الملك", "requirement": "الوصول للمركز الأول" }
+    ],
+    "points_logic": {
+      "book_download": 50,
+      "quiz_correct": 10,
+      "daily_login": 5,
+      "live_attendance": 100
+    }
+  },
+  "server_config": {
+    "maintenance_mode": false,
+    "allowed_ips": ["*"],
+    "api_endpoints": {
+      "getBooks": "/api/v1/library",
+      "syncUser": "/api/v1/user/sync",
+      "postScore": "/api/v1/scores"
+    }
+  }
 }
-
