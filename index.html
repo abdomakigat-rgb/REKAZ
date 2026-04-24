@@ -60,6 +60,20 @@
             background: #D4AF37;
             border-radius: 10px;
         }
+        /* تأثيرات النبض والظهور لرسائل جيميناي */
+        .typing-dot {
+            width: 4px;
+            height: 4px;
+            background: #4285f4;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
     </style>
 </head>
 <body class="bg-dark text-gray-200 font-['Cairo'] overflow-x-hidden antialiased">
@@ -223,12 +237,13 @@
             <div class="glass-panel p-6 rounded-[2.5rem] border-2 border-white/10 shadow-2xl bg-dark/95 backdrop-blur-3xl h-[550px] flex flex-col">
                 <div class="flex items-center justify-between mb-4 border-b border-white/10 pb-4">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-gradient-to-br from-[#4285f4] to-[#9b72cb] rounded-xl flex items-center justify-center shadow-lg">
-                            <i data-lucide="sparkles" class="text-white w-6 h-6 animate-pulse"></i>
+                        <div class="w-10 h-10 bg-gradient-to-br from-[#4285f4] to-[#9b72cb] rounded-xl flex items-center justify-center shadow-lg relative overflow-hidden group">
+                             <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform"></div>
+                            <i data-lucide="sparkles" class="text-white w-6 h-6 animate-pulse z-10"></i>
                         </div>
                         <div>
                             <h4 class="font-black text-lg gemini-gradient tracking-tight leading-none">مساعد جيميناي</h4>
-                            <span class="text-[8px] text-gray-500 uppercase font-bold tracking-widest">AI Expert System</span>
+                            <span class="text-[8px] text-gray-500 uppercase font-bold tracking-widest">REKAZ Intelligence 2.0</span>
                         </div>
                     </div>
                     <button onclick="toggleGemini()" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 text-gray-500 hover:text-white hover:bg-white/10 transition-all">
@@ -236,13 +251,10 @@
                     </button>
                 </div>
                 <div id="chat-content" class="flex-1 overflow-y-auto space-y-4 mb-4 custom-scrollbar px-2">
-                    <div class="bg-white/5 p-5 rounded-2xl text-xs leading-relaxed border border-white/5 text-gray-300 shadow-sm">
-                        أهلاً بك يا بطل رِكاز! أنا **جيميناي**، مساعدك الذكي المتكامل. يمكنني شرح الدروس، حل المسائل، أو حتى مساعدتك في تنظيم وقتك. ماذا لديك اليوم؟
                     </div>
-                </div>
                 <div class="flex gap-2 relative">
-                    <input type="text" id="gemini-input" onkeypress="if(event.key==='Enter') sendToGemini()" placeholder="اسأل جيميناي أي شيء..." class="w-full bg-white/5 border border-white/10 p-5 pl-14 rounded-2xl text-sm focus:border-gold outline-none transition-all placeholder:text-gray-600 text-white">
-                    <button onclick="sendToGemini()" class="absolute left-2 top-2 bottom-2 bg-gold text-black px-5 rounded-xl font-black hover:scale-95 active:scale-90 transition-all shadow-lg flex items-center justify-center">
+                    <input type="text" id="gemini-input" onkeypress="if(event.key==='Enter') sendToGemini()" placeholder="اسأل جيميناي أي شيء..." class="w-full bg-white/5 border border-white/10 p-5 pl-14 rounded-2xl text-sm focus:border-gold outline-none transition-all placeholder:text-gray-600 text-white shadow-inner">
+                    <button id="send-btn" onclick="sendToGemini()" class="absolute left-2 top-2 bottom-2 bg-gold text-black px-5 rounded-xl font-black hover:scale-95 active:scale-90 transition-all shadow-lg flex items-center justify-center overflow-hidden">
                         <i data-lucide="send" class="w-5 h-5"></i>
                     </button>
                 </div>
@@ -282,10 +294,8 @@
     </div>
 
     <script>
-        // تفعيل أيقونات Lucide
         lucide.createIcons();
 
-        // دالة معالجة صورة البروفايل
         let userPFPBase64 = "";
         function handlePFP(input) {
             if (input.files && input.files[0]) {
@@ -300,33 +310,25 @@
             }
         }
 
-        // دالة بدء التجربة
         function startMakiExperience() {
             const userNameInput = document.getElementById('user-name-input');
             const userName = userNameInput.value.trim();
-            
             if(!userName) {
                 userNameInput.classList.add('border-red-500');
                 setTimeout(() => userNameInput.classList.remove('border-red-500'), 2000);
                 return;
             }
-            
-            // تحديث الواجهة
             document.getElementById('user-name-display').innerText = userName;
-            if(userPFPBase64) {
-                document.getElementById('user-avatar').src = userPFPBase64;
-            }
-
-            // تفعيل الإشعارات
+            if(userPFPBase64) document.getElementById('user-avatar').src = userPFPBase64;
+            
             showNotification(`مرحباً بك يا ${userName} في رِكاز 2026`);
-
-            // التبديل للواجهة الرئيسية
             document.getElementById('auth-gate').style.display = 'none';
             const app = document.getElementById('main-app');
             app.classList.remove('hidden');
             setTimeout(() => {
                 app.style.opacity = '1';
                 lucide.createIcons();
+                initGemini(userName); // تشغيل جيميناي
             }, 100);
         }
 
@@ -343,49 +345,85 @@
             lucide.createIcons();
         }
 
-        function sendToGemini() {
-            const input = document.getElementById('gemini-input');
+        /* --- تطوير نظام جيميناي الذكي --- */
+        
+        function initGemini(name) {
             const chatContent = document.getElementById('chat-content');
-            
-            if (input.value.trim() === "") return;
-
-            // رسالة المستخدم
-            chatContent.innerHTML += `
-                <div class="flex justify-start">
-                    <div class="bg-gold/10 p-4 rounded-2xl text-xs text-gold border border-gold/20 max-w-[80%] shadow-sm">
-                        ${input.value}
+            chatContent.innerHTML = `
+                <div class="flex justify-end opacity-0 translate-y-4 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-forwards">
+                    <div class="bg-white/5 p-4 rounded-2xl text-xs border border-white/10 text-gray-300 max-w-[85%] shadow-sm leading-relaxed">
+                        أهلاً بك يا بطل **${name}**! معك مساعد جيميناي المطور خصيصاً لمنصة رِكاز. كيف يمكنني دعمك في رحلتك الدراسية اليوم؟ 🚀
                     </div>
                 </div>
             `;
+        }
+
+        async function sendToGemini() {
+            const input = document.getElementById('gemini-input');
+            const chatContent = document.getElementById('chat-content');
+            const sendBtn = document.getElementById('send-btn');
             
+            if (input.value.trim() === "") return;
+
             const userMsg = input.value;
             input.value = "";
+
+            // رسالة المستخدم بتصميم راقي
+            chatContent.innerHTML += `
+                <div class="flex justify-start">
+                    <div class="bg-gold/10 p-4 rounded-2xl text-xs text-gold border border-gold/20 max-w-[85%] shadow-sm animate-pulse-once">
+                        ${userMsg}
+                    </div>
+                </div>
+            `;
             chatContent.scrollTop = chatContent.scrollHeight;
 
-            // محاكاة جيميناي
+            // إظهار تأثير "جاري التفكير"
+            const typingId = "typing-" + Date.now();
+            chatContent.innerHTML += `
+                <div id="${typingId}" class="flex justify-end">
+                    <div class="bg-white/5 p-4 rounded-2xl flex gap-1 items-center">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            `;
+            chatContent.scrollTop = chatContent.scrollHeight;
+
+            // محاكاة استجابة ذكية (Logic)
             setTimeout(() => {
+                document.getElementById(typingId).remove();
+                
+                let response = "";
+                const msg = userMsg.toLowerCase();
+                
+                if(msg.includes("سلام") || msg.includes("هلا")) response = "وعليكم السلام يا بطل! مستعد للمذاكرة؟";
+                else if(msg.includes("مذاكرة") || msg.includes("جدول")) response = "التنظيم هو مفتاح النجاح. جرب تقنية 'البومودورو': 25 دقيقة تركيز و5 دقائق راحة. هل تريدني أن أساعدك في تقسيم مادة معينة؟";
+                else if(msg.includes("شكرا") || msg.includes("شكراً")) response = "العفو يا مكي! دائماً في خدمتك وخدمة طلاب رِكاز.";
+                else response = `لقد استلمت طلبك بخصوص "${userMsg}". بصفتي مساعدك الذكي في رِكاز، أنصحك بمراجعة خزانة الكتب أولاً ثم البدء بالتطبيق العملي. هل هناك جزء محدد في المنهج يصعب عليك؟`;
+
                 chatContent.innerHTML += `
                     <div class="flex justify-end">
-                        <div class="bg-white/5 p-4 rounded-2xl text-xs border border-white/10 text-gray-400 max-w-[80%] italic shadow-inner">
-                             بناءً على نظام "رِكاز 2026"، جاري معالجة استفسارك حول: "${userMsg}"... سأعطيك الإجابة النموذجية فوراً!
+                        <div class="bg-white/5 p-4 rounded-2xl text-xs border border-white/10 text-gray-300 max-w-[85%] shadow-md leading-relaxed animate-in fade-in duration-700">
+                            ${response}
                         </div>
                     </div>
                 `;
                 chatContent.scrollTop = chatContent.scrollHeight;
-            }, 1000);
+                lucide.createIcons();
+            }, 1500);
         }
 
-        // إخفاء الـ splash بعد التحميل
         window.addEventListener('load', () => {
             const bar = document.getElementById('progress-bar');
             bar.style.width = '100%';
             setTimeout(() => {
                 document.getElementById('splash-screen').style.opacity = '0';
                 setTimeout(() => document.getElementById('splash-screen').style.display = 'none', 1000);
-            }, 1000);
+            }, 100);
         });
     </script>
-
     <script src="script.js"></script>
 </body>
 </html>
