@@ -28,7 +28,6 @@
     <style>
         body { font-family: 'Tajawal', sans-serif; background-color: #F9F6F0; color: #2D2D2D; overflow-x: hidden; }
         
-        /* تصميم كلمة رِكاز بخط نيسو العربي الفخم */
         .brand-name { 
             font-family: 'Noto Naskh Arabic', serif; 
             background: linear-gradient(135deg, #8E6F3E 0%, #C5A059 50%, #8E6F3E 100%);
@@ -43,7 +42,6 @@
             to { background-position: 200% center; }
         }
 
-        /* شاشة تحميل جذابة (أبيض في ذهبي) */
         #splash-screen {
             background: #F9F6F0;
             display: flex;
@@ -88,10 +86,6 @@
     </style>
 </head>
 <body class="antialiased">
-
-    <audio id="rekaz-bg-music" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-    </audio>
 
     <div id="splash-screen" class="fixed inset-0 z-[1000] transition-all duration-1000">
         <div class="loader-glow"></div>
@@ -208,10 +202,10 @@
                     </div>
                     <button onclick="toggleGemini()"><i data-lucide="chevron-down" class="text-gray-400"></i></button>
                 </div>
-                <div id="chat-content" class="flex-1 overflow-y-auto custom-scrollbar space-y-4 mb-4 text-xs pr-2 text-gray-500"></div>
+                <div id="chat-content" class="flex-1 overflow-y-auto custom-scrollbar space-y-4 mb-4 text-xs pr-2 text-gray-600 font-medium"></div>
                 <div class="relative">
                     <input type="text" id="gemini-input" placeholder="اسأل وسنجيبك..." class="w-full bg-white border border-gold/10 p-4 rounded-2xl outline-none focus:border-gold/40 text-gray-600">
-                    <button onclick="sendToGemini()" class="absolute left-2 top-2 bg-gold p-2 rounded-xl text-white"><i data-lucide="sparkles" class="w-4 h-4"></i></button>
+                    <button onclick="sendToGemini()" class="absolute left-2 top-2 bg-gold p-2 rounded-xl text-white transition-transform active:scale-90"><i data-lucide="sparkles" class="w-4 h-4"></i></button>
                 </div>
             </div>
         </div>
@@ -248,6 +242,16 @@
         lucide.createIcons();
         let authMode = 'login';
         let currentUser = null;
+
+        const aiResponses = {
+            "سلام": "وعليكم السلام ورحمة الله وبركاته، أهلاً بك في رِكاز.",
+            "مرحبا": "مرحباً بك يا مبدع، كيف يمكنني مساعدتك اليوم؟",
+            "فقه": "الفقه هو العلم بالأحكام الشرعية العملية، هل تريد شرحاً لباب معين؟",
+            "بيع": "البيع عقد معاوضة، وأهم أركانه الرضا والمحل والصيغة.",
+            "ربا": "الربا محرم شرعاً، وهو زيادة في أشياء مخصوصة، احذر منه في تعاملاتك.",
+            "ركاز": "رِكاز هي منصتك الملكية للتميز العلمي والفكري.",
+            "شكرا": "العفو، نحن دائماً في خدمتك لتحقيق أفضل النتائج."
+        };
 
         function showSection(sectionId) {
             document.getElementById('section-home').classList.add('hidden');
@@ -296,7 +300,6 @@
         }
 
         function loginToApp() {
-            document.getElementById('rekaz-bg-music').play();
             document.getElementById('user-name-display').innerText = currentUser.name;
             document.getElementById('user-avatar').src = currentUser.pfp;
             document.getElementById('auth-gate').style.opacity = '0';
@@ -327,7 +330,7 @@
                         <img src="${p.avatar}" class="w-10 h-10 rounded-xl object-cover border border-gold/10">
                         <div><h5 class="font-bold text-gray-700 text-xs">${p.author}</h5><p class="text-[9px] text-gray-400">${p.time}</p></div>
                     </div>
-                    <p class="text-xs text-gray-500 leading-relaxed">${p.content}</p>
+                    <p class="text-xs text-gray-600 leading-relaxed">${p.content}</p>
                 </div>
             `).join('');
         }
@@ -361,19 +364,27 @@
         function toggleGemini() { document.getElementById('gemini-chat-window').classList.toggle('active'); }
 
         function initGemini() {
-            document.getElementById('chat-content').innerHTML = `<div class="bg-gold/5 p-3 rounded-xl">أهلاً بك في رِكاز! كيف نخدمك؟</div>`;
+            document.getElementById('chat-content').innerHTML = `<div class="bg-gold/10 p-4 rounded-2xl mb-2 text-gold">مرحباً ${currentUser.name}، أنا ذكاء رِكاز المساعد. اسألني عن الفقه أو عن المنصة.</div>`;
         }
 
         function sendToGemini() {
             const input = document.getElementById('gemini-input');
-            if(!input.value) return;
+            const val = input.value.trim().toLowerCase();
+            if(!val) return;
             const content = document.getElementById('chat-content');
-            content.innerHTML += `<div class="text-gold text-left font-bold mb-2">${input.value}</div>`;
+            
+            content.innerHTML += `<div class="text-left py-2 px-4 bg-gray-100 rounded-xl mb-4 ml-8">${input.value}</div>`;
             input.value = "";
+            content.scrollTop = content.scrollHeight;
+
             setTimeout(() => {
-                content.innerHTML += `<div class="bg-gold/5 p-3 rounded-xl mb-4">طلبك قيد المعالجة في السجلات الملكية..</div>`;
+                let response = "عذراً، لم أفهم استفسارك بدقة. هل يمكنك توضيح ما تطلبه بخصوص مكتبة رِكاز؟";
+                for (let key in aiResponses) {
+                    if (val.includes(key)) { response = aiResponses[key]; break; }
+                }
+                content.innerHTML += `<div class="bg-gold/5 p-4 rounded-2xl mb-4 mr-8 border-r-4 border-gold text-gray-700">${response}</div>`;
                 content.scrollTop = content.scrollHeight;
-            }, 1000);
+            }, 800);
         }
 
         function logoutMaki() { location.reload(); }
