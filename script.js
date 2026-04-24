@@ -1,193 +1,243 @@
 /**
- * رِكاز 2026 - العقل المدبر (Logic)
- * المبرمج: Ab Maki
+ * ============================================================
+ * PROJECT: NEO-REKAZ OS 2026
+ * AUTHOR: AB MAKI (THE ARCHITECT)
+ * VERSION: 4.0.0 (GOLDEN EDITION)
+ * ============================================================
  */
 
-// 1. قاعدة بيانات المواد والأسئلة
-const REKAZ_DB = {
-    stages: ["رابعة ابتدائي", "خامسة ابتدائي", "سادسة ابتدائي", "أولى إعدادي", "تانية إعدادي", "تالتة إعدادي", "أولى ثانوي", "تانية ثانوي", "تالتة ثانوي"],
-    subjects: {
-        elementary: ["اللغة العربية", "الرياضيات", "العلوم", "الدراسات الاجتماعية", "English (Connect)"],
-        preparatory: ["اللغة العربية", "الرياضيات", "العلوم", "الدراسات", "اللغة الإنجليزية"],
-        secondary: ["الفيزياء", "الكيمياء", "الأحياء", "التاريخ", "الجغرافيا", "اللغة العربية", "الرياضيات"]
+// 1. قاعدة البيانات الضخمة (Central Database)
+const REKAZ_CORE = {
+    settings: {
+        platformName: "رِكاز 2026",
+        developer: "Ab Maki Experiments",
+        isLive: true,
+        pointsPerBook: 50,
     },
-    // عينة لأسئلة الاختبارات
-    quizBank: [
-        { q: "ما هو العلم الذي يهتم بدراسة المادة والطاقة؟", o: ["الكيمياء", "الفيزياء", "الأحياء", "الفلك"], c: 1 },
-        { q: "كم عدد أركان الإسلام؟", o: ["ثلاثة", "أربعة", "خمسة", "ستة"], c: 2 },
-        { q: "من هو قائد معركة حطين؟", o: ["خالد بن الوليد", "صلاح الدين الأيوبي", "قطز", "عمر بن الخطاب"], c: 1 }
+    // قاعدة بيانات الكتب الشاملة
+    books: [
+        { id: 101, title: "اللغة العربية", stage: "3s", type: "علمي/أدبي", file: "arabic_full.pdf", img: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=400", views: 1240 },
+        { id: 102, title: "الفيزياء الحديثة", stage: "3s", type: "علمي", file: "physics_3s.pdf", img: "https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?q=80&w=400", views: 890 },
+        { id: 103, title: "الكيمياء العضوية", stage: "3s", type: "علمي", file: "chem_3s.pdf", img: "https://images.unsplash.com/photo-1603126857599-f6e157fa2fe6?q=80&w=400", views: 750 },
+        { id: 104, title: "تاريخ مصر الحديث", stage: "3s", type: "أدبي", file: "history_3s.pdf", img: "https://images.unsplash.com/photo-1585036156171-383f24ad0e49?q=80&w=400", views: 560 },
+        { id: 105, title: "الفقه الحنفي", stage: "azhar", type: "أزهر", file: "fiqh_azhar.pdf", img: "https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=400", views: 430 },
+        { id: 106, title: "الرياضيات التطبيقية", stage: "3s", type: "علمي رياضة", file: "math_3s.pdf", img: "https://images.unsplash.com/photo-1509228468518-180dd4864904?q=80&w=400", views: 1100 }
+    ],
+    // بنك أسئلة التحدي اليومي
+    dailyChallenges: [
+        { q: "من هو مؤلف كتاب 'البيان والتبيين'؟", a: "الجاحظ" },
+        { q: "ما هي وحدة قياس كثافة الفيض المغناطيسي؟", a: "التسلا" },
+        { q: "في أي عام تم بناء الجامع الأزهر؟", a: "972" }
     ]
 };
 
-// 2. المتغيرات العامة للنظام
-let currentUser = null;
-let profileImage = "https://ui-avatars.com/api/?background=D4AF37&color=000&size=256";
-let quizScore = 0;
-let currentQuestionIndex = 0;
-let activeQuizList = [];
+// 2. المتغيرات النشطة (Global State)
+let userState = {
+    isLoggedIn: false,
+    data: null,
+    points: 0,
+    currentTab: 'home',
+    timerInterval: null
+};
 
-// 3. نظام التوثيق (Auth System)
-function toggleAuth(mode) {
-    const inputs = document.getElementById('auth-inputs');
-    const btnLogin = document.getElementById('btn-login');
-    const btnSignup = document.getElementById('btn-signup');
-    const actionText = document.getElementById('auth-action-text');
+/** 3. نظام بدء التشغيل (Initialization) **/
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("%c NEO-REKAZ SYSTEM ACTIVATED ", "background: #D4AF37; color: #000; font-weight: bold; padding: 10px;");
+    
+    // تشغيل الأيقونات
+    lucide.createIcons();
+
+    // فحص الجلسة السابقة
+    const savedUser = localStorage.getItem('rekaz_session');
+    if (savedUser) {
+        userState.data = JSON.parse(savedUser);
+        userState.points = parseInt(localStorage.getItem('rekaz_points')) || 0;
+        initApp();
+    } else {
+        showSplashScreen();
+    }
+});
+
+/** 4. شاشة البداية والترحيب **/
+function showSplashScreen() {
+    setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        if (splash) {
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.classList.add('hidden');
+                document.getElementById('auth-gate').classList.remove('hidden');
+            }, 1000);
+        }
+    }, 3000);
+}
+
+/** 5. محرك إدارة الهوية (Identity Management) **/
+function switchTab(mode) {
+    const fields = document.getElementById('auth-form');
+    const loginBtn = document.getElementById('tab-login');
+    const signupBtn = document.getElementById('tab-signup');
 
     if (mode === 'login') {
-        btnLogin.className = "flex-1 py-3 rounded-xl font-bold bg-gold text-black shadow-lg shadow-gold/20";
-        btnSignup.className = "flex-1 py-3 rounded-xl font-bold text-gray-400";
-        actionText.innerText = "دخول النادي الملكي";
-        inputs.innerHTML = `
-            <input type="text" id="u-name-in" placeholder="اسم المستخدم" class="input-maki reveal">
-            <input type="password" id="u-pass-in" placeholder="كلمة المرور" class="input-maki reveal" style="animation-delay: 0.1s">
+        loginBtn.className = "flex-1 py-3 rounded-xl font-black text-sm transition-all bg-gold text-black shadow-xl";
+        signupBtn.className = "flex-1 py-3 rounded-xl font-black text-sm transition-all text-gray-500";
+        fields.innerHTML = `
+            <div class="space-y-4 reveal-animation">
+                <input type="text" id="in-user" placeholder="كود الطالب أو البريد" class="input-field w-full p-4 rounded-2xl text-sm border border-white/10 bg-white/5">
+                <input type="password" id="in-pass" placeholder="كلمة المرور" class="input-field w-full p-4 rounded-2xl text-sm border border-white/10 bg-white/5">
+            </div>
         `;
     } else {
-        btnSignup.className = "flex-1 py-3 rounded-xl font-bold bg-gold text-black shadow-lg shadow-gold/20";
-        btnLogin.className = "flex-1 py-3 rounded-xl font-bold text-gray-400";
-        actionText.innerText = "إنشاء عضوية ملكية";
-        inputs.innerHTML = `
-            <div class="flex justify-center mb-4 reveal">
-                <label class="w-24 h-24 rounded-[2rem] border-2 border-dashed border-gold/30 flex items-center justify-center cursor-pointer overflow-hidden bg-white/5 hover:border-gold transition-all">
-                    <img id="temp-pfp" class="hidden w-full h-full object-cover">
-                    <i id="cam-icon" data-lucide="camera" class="text-gold"></i>
-                    <input type="file" class="hidden" onchange="previewProfileImage(this)">
-                </label>
+        signupBtn.className = "flex-1 py-3 rounded-xl font-black text-sm transition-all bg-gold text-black shadow-xl";
+        loginBtn.className = "flex-1 py-3 rounded-xl font-black text-sm transition-all text-gray-500";
+        fields.innerHTML = `
+            <div class="space-y-4 reveal-animation">
+                <input type="text" id="up-name" placeholder="الاسم الرباعي" class="input-field w-full p-4 rounded-2xl text-sm border border-white/10 bg-white/5">
+                <select id="up-stage" class="input-field w-full p-4 rounded-2xl text-sm border border-white/10 bg-black text-white">
+                    <option value="3s">الثالث الثانوي (عام)</option>
+                    <option value="azhar">الثانوية الأزهرية</option>
+                    <option value="2s">الثاني الثانوي</option>
+                </select>
+                <input type="password" id="up-pass" placeholder="كلمة مرور قوية" class="input-field w-full p-4 rounded-2xl text-sm border border-white/10 bg-white/5">
             </div>
-            <input type="text" id="u-name-in" placeholder="الاسم الرباعي" class="input-maki reveal">
-            <select id="u-stage-in" class="input-maki reveal" style="animation-delay: 0.1s">
-                ${REKAZ_DB.stages.map(s => `<option value="${s}">${s}</option>`).join('')}
-            </select>
         `;
     }
-    lucide.createIcons();
 }
 
-function previewProfileImage(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            profileImage = e.target.result;
-            document.getElementById('temp-pfp').src = e.target.result;
-            document.getElementById('temp-pfp').classList.remove('hidden');
-            document.getElementById('cam-icon').classList.add('hidden');
-        };
-        reader.readAsDataURL(input.files[0]);
-    }
-}
+/** 6. معالج الدخول الرئيسي (Main Authenticator) **/
+function startMakiExperience() {
+    const nameInput = document.getElementById('up-name')?.value || document.getElementById('in-user')?.value;
+    const stageInput = document.getElementById('up-stage')?.value || "3s";
 
-function handleAuth() {
-    const nameInput = document.getElementById('u-name-in').value;
-    const stageInput = document.getElementById('u-stage-in')?.value || "الثالث الثانوي";
-
-    if (nameInput.length < 3) {
-        alert("يا بطل، الاسم لازم يكون حقيقي وطويل شوية!");
+    if (!nameInput || nameInput.length < 5) {
+        showNotification("يا بطل، اكتب اسمك الحقيقي عشان تظهر في لوحة الشرف!");
         return;
     }
 
-    // حفظ بيانات المستخدم
-    currentUser = { name: nameInput, stage: stageInput };
+    // محاكاة الاتصال بالسيرفر
+    const btn = document.querySelector('button[onclick="startMakiExperience()"]');
+    btn.innerHTML = `<i class="animate-spin" data-lucide="loader-2"></i> جارِ التشفير...`;
+    lucide.createIcons();
 
-    // تحديث الواجهة
-    document.getElementById('display-name').innerText = currentUser.name;
-    document.getElementById('display-rank').innerText = currentUser.stage;
-    document.getElementById('user-avatar').src = profileImage;
-    document.getElementById('stage-badge').innerText = `كتب ${currentUser.stage} - النسخة الأصلية`;
+    setTimeout(() => {
+        userState.data = { name: nameInput, stage: stageInput, id: "MAKI-" + Date.now().toString().slice(-4) };
+        localStorage.setItem('rekaz_session', JSON.stringify(userState.data));
+        initApp();
+    }, 2000);
+}
 
-    // الانتقال للتطبيق
-    document.getElementById('auth-screen').style.display = 'none';
-    const app = document.getElementById('app-content');
+/** 7. تهيئة المنصة الداخلية (App Launch) **/
+function initApp() {
+    document.getElementById('auth-gate').classList.add('hidden');
+    const app = document.getElementById('main-app');
     app.classList.remove('hidden');
-    setTimeout(() => app.classList.add('opacity-100'), 50);
+    setTimeout(() => app.style.opacity = '1', 50);
 
-    loadLibrary(currentUser.stage);
+    // تحديث البيانات المرئية
+    document.getElementById('user-name-display').innerText = userState.data.name;
+    document.getElementById('user-stage-display').innerText = `طالب ${userState.data.stage === 'azhar' ? 'أزهري' : 'ثانوية عامة'} | ID: ${userState.data.id}`;
+    document.getElementById('user-avatar').src = `https://ui-avatars.com/api/?name=${userState.data.name}&background=D4AF37&color=000&bold=true`;
+
+    loadLibrary();
+    startLiveCheck();
+    showNotification(`مرحباً بك يا ${userState.data.name.split(' ')[0]} في رِكاز 2026`);
 }
 
-// 4. نظام المكتبة (Library System)
-function loadLibrary(stage) {
-    const grid = document.getElementById('library-grid');
-    let subList = [];
+/** 8. محرك المكتبة الذكي (Library Engine) **/
+function loadLibrary(filter = 'all') {
+    const container = document.getElementById('books-container');
+    container.innerHTML = "";
 
-    if (stage.includes("ابتدائي")) subList = REKAZ_DB.subjects.elementary;
-    else if (stage.includes("إعدادي")) subList = REKAZ_DB.subjects.preparatory;
-    else subList = REKAZ_DB.subjects.secondary;
+    const filteredBooks = filter === 'all' 
+        ? REKAZ_CORE.books 
+        : REKAZ_CORE.books.filter(b => b.type.includes(filter));
 
-    grid.innerHTML = subList.map((sub, idx) => `
-        <div onclick="startQuiz('${sub}')" class="glass-panel p-8 text-center group cursor-pointer reveal" style="animation-delay: ${idx * 0.1}s">
-            <div class="w-16 h-16 bg-gold/10 rounded-[1.5rem] mx-auto mb-5 flex items-center justify-center text-gold group-hover:bg-gold group-hover:text-black transition-all duration-500">
-                <i data-lucide="book-open-check" size="28"></i>
+    filteredBooks.forEach((book, idx) => {
+        const card = document.createElement('div');
+        card.className = "group relative reveal-animation";
+        card.style.animationDelay = `${idx * 0.1}s`;
+        card.innerHTML = `
+            <div class="aspect-[3/4] bg-white/5 rounded-[2.5rem] overflow-hidden border border-white/10 group-hover:border-gold/50 transition-all duration-700 relative shadow-2xl">
+                <img src="${book.img}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                <div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 flex items-center gap-2">
+                    <i data-lucide="eye" size="12" class="text-gold"></i>
+                    <span class="text-[9px] font-bold">${book.views}</span>
+                </div>
+                <div class="absolute bottom-6 left-4 right-4 translate-y-12 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                    <button onclick="downloadBook('${book.file}', ${book.id})" class="w-full py-4 bg-gold text-black rounded-2xl font-black text-[10px] flex items-center justify-center gap-2 shadow-xl shadow-gold/20 active:scale-95">
+                        تحميل الكتاب <i data-lucide="download"></i>
+                    </button>
+                </div>
             </div>
-            <h5 class="font-black text-sm mb-4">${sub}</h5>
-            <button class="w-full py-2 bg-white/5 rounded-xl text-[10px] text-gold font-bold border border-gold/10 group-hover:bg-gold/20 transition-all">تحميل PDF</button>
-        </div>
-    `).join('');
+            <h5 class="mt-5 font-black text-center text-sm group-hover:text-gold transition-colors">${book.title}</h5>
+            <p class="text-[9px] text-gray-500 text-center font-black uppercase tracking-[0.2em] mt-1">${book.type}</p>
+        `;
+        container.appendChild(card);
+    });
     lucide.createIcons();
 }
 
-// 5. نظام الاختبارات (Quiz Logic)
-function startQuiz(subName) {
-    activeQuizList = [...REKAZ_DB.quizBank].sort(() => Math.random() - 0.5); // خلط الأسئلة
-    currentQuestionIndex = 0;
-    quizScore = 0;
+/** 9. نظام التنبيهات والتحميل **/
+function downloadBook(fileName, bookId) {
+    showNotification("جارِ تجهيز رابط التحميل الآمن...");
     
-    document.getElementById('quiz-container').classList.remove('hidden');
-    document.getElementById('q-title').innerText = `تحدي: ${subName}`;
-    renderQuestion();
+    // محاكاة تحديث النقاط
+    setTimeout(() => {
+        userState.points += REKAZ_CORE.settings.pointsPerBook;
+        localStorage.setItem('rekaz_points', userState.points);
+        showNotification(`تم التحميل! حصلت على ${REKAZ_CORE.settings.pointsPerBook} نقطة مكافأة 🏆`);
+        
+        // كود التحميل الحقيقي (لو الملف موجود)
+        // window.open('pdf/' + fileName, '_blank');
+    }, 1500);
 }
 
-function renderQuestion() {
-    const q = activeQuizList[currentQuestionIndex];
-    if (!q) return showFinalResult();
+function showNotification(text) {
+    const toast = document.getElementById('maki-notification');
+    const toastText = document.getElementById('notification-text');
+    toastText.innerText = text;
+    
+    toast.classList.remove('hidden');
+    toast.style.transform = 'translate(-50%, 0)';
+    toast.style.opacity = '1';
 
-    document.getElementById('q-text').innerText = q.q;
-    const optionsGrid = document.getElementById('q-options');
-    optionsGrid.innerHTML = q.o.map((opt, i) => `
-        <button onclick="checkSelectedAnswer(${i}, ${q.c})" class="q-option reveal shadow-sm">
-            ${opt}
-        </button>
-    `).join('');
-
-    document.getElementById('next-q-btn').disabled = true;
-    document.getElementById('next-q-btn').classList.add('opacity-30');
+    setTimeout(() => {
+        toast.style.transform = 'translate(-50%, -20px)';
+        toast.style.opacity = '0';
+        setTimeout(() => toast.classList.add('hidden'), 500);
+    }, 4000);
 }
 
-function checkSelectedAnswer(idx, correct) {
-    const btns = document.querySelectorAll('.q-option');
-    btns.forEach(b => b.disabled = true);
+/** 10. نظام البث المباشر الحي (Live Engine) **/
+function startLiveCheck() {
+    const liveBanner = document.getElementById('live-banner');
+    setInterval(() => {
+        const now = new Date();
+        const hours = now.getHours();
+        
+        // يظهر البث من الساعة 7 مساءً حتى 11 مساءً
+        if (hours >= 19 && hours <= 23) {
+            liveBanner.classList.remove('hidden');
+            liveBanner.classList.add('flex');
+        } else {
+            liveBanner.classList.add('hidden');
+        }
+    }, 60000); // يفحص كل دقيقة
+}
 
-    if (idx === correct) {
-        btns[idx].classList.add('q-correct');
-        quizScore++;
-    } else {
-        btns[idx].classList.add('q-wrong');
-        btns[correct].classList.add('q-correct');
+/** 11. نظام الحماية (Anti-Cheat & Protection) **/
+window.addEventListener('keydown', (e) => {
+    // منع F12، Ctrl+Shift+I، Ctrl+U
+    if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73) || (e.ctrlKey && e.keyCode === 85)) {
+        e.preventDefault();
+        showNotification("عذراً، محاولة الوصول لأكواد المنصة مرفوضة 🛡️");
     }
+});
 
-    const nextBtn = document.getElementById('next-q-btn');
-    nextBtn.disabled = false;
-    nextBtn.classList.remove('opacity-30');
+function logoutMaki() {
+    if (confirm("هل تريد تسجيل الخروج من النادي الملكي؟")) {
+        localStorage.removeItem('rekaz_session');
+        window.location.reload();
+    }
 }
-
-function nextQuestion() {
-    currentQuestionIndex++;
-    renderQuestion();
-}
-
-function showFinalResult() {
-    const total = activeQuizList.length;
-    const percentage = (quizScore / total) * 100;
-    let rank = percentage >= 90 ? "ملك التعليم 🔥" : percentage >= 70 ? "طالب مجتهد ✨" : "محتاج مراجعة 👍";
-    
-    alert(`النتيجة النهائية: ${quizScore} من ${total}\nرتبتك الحالية: ${rank}`);
-    closeQuiz();
-}
-
-function closeQuiz() {
-    document.getElementById('quiz-container').classList.add('hidden');
-}
-
-// تشغيل التأثيرات عند البداية
-window.onload = () => {
-    toggleAuth('login');
-    lucide.createIcons();
-};
-
