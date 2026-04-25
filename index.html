@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Street Wars RP: Arsenal Edition</title>
+    <title>Street Wars RP: City Life</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Segoe UI', sans-serif; touch-action: none; color: white; }
@@ -19,7 +19,7 @@
             backdrop-filter: blur(20px); border: 1px solid rgba(0, 242, 255, 0.3);
             width: 340px; text-align: center; box-shadow: 0 0 30px rgba(0,0,0,0.5);
         }
-        input, select {
+        input {
             width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #333; 
             background: rgba(0,0,0,0.5); color: white; box-sizing: border-box; outline: none;
         }
@@ -36,27 +36,38 @@
             padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; font-size: 16px;
         }
 
-        /* شاشة التحميل المتطورة */
+        /* شاشة التحميل */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #050505; z-index: 200; display: none; flex-direction: column;
             align-items: center; justify-content: center;
         }
         .loading-content { text-align: center; width: 80%; max-width: 400px; }
-        #load-tip { font-style: italic; color: #888; margin-bottom: 20px; min-height: 20px; font-size: 14px; }
+        #load-tip { font-style: italic; color: #888; margin-bottom: 20px; font-size: 14px; }
         .loader-icon { font-size: 40px; color: #00f2ff; animation: spin 1s linear infinite; margin-bottom: 20px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        .progress-container { width: 100%; height: 6px; background: #222; border-radius: 10px; overflow: hidden; position: relative; }
-        .progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #00f2ff, #0072ff); box-shadow: 0 0 10px #00f2ff; transition: width 0.4s ease; }
+        .progress-container { width: 100%; height: 6px; background: #222; border-radius: 10px; overflow: hidden; }
+        .progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #00f2ff, #0072ff); box-shadow: 0 0 10px #00f2ff; }
 
-        /* HUD اللعبة */
+        /* نظام الإشعارات */
+        #notifications {
+            position: fixed; top: 20px; right: 20px; z-index: 300;
+            display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+        }
+        .notif {
+            background: rgba(0, 0, 0, 0.8); border-right: 4px solid #00f2ff;
+            padding: 10px 20px; border-radius: 5px; font-size: 13px;
+            animation: slideIn 0.5s ease forwards;
+        }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* HUD */
         #ui-hud { position: absolute; top: 20px; left: 20px; pointer-events: none; z-index: 10; }
         .hud-card {
             background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px;
             border-left: 4px solid #00f2ff; margin-bottom: 8px; font-size: 13px; display: flex; align-items: center; gap: 10px;
         }
         
-        /* أزرار التحكم */
         .mobile-btn {
             position: absolute; background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 50%;
@@ -68,16 +79,15 @@
         #btn-down { bottom: 30px; right: 40px; }
         #btn-left { bottom: 30px; left: 30px; }
         #btn-right { bottom: 30px; left: 120px; }
-        
-        #btn-action { top: 20px; right: 20px; width: auto; height: 50px; padding: 0 20px; border-radius: 12px; background: #c0392b; font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
-        
-        /* زر السلاح */
         #btn-fire { bottom: 120px; left: 75px; background: rgba(255, 0, 0, 0.3); border: 2px solid #ff0000; width: 60px; height: 60px; display: none; }
+        #btn-action { top: 20px; right: 20px; width: auto; height: 50px; padding: 0 20px; border-radius: 12px; background: #c0392b; font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
 
         #speedometer { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); text-align: center; }
     </style>
 </head>
 <body>
+
+    <div id="notifications"></div>
 
     <div id="auth-screen">
         <div class="login-box">
@@ -88,7 +98,7 @@
                 <div class="side-btn" id="side-t" onclick="setRole('thief')"><i class="fas fa-mask"></i> حرامي</div>
             </div>
             <input type="text" id="room-code" placeholder="كود الغرفة...">
-            <input type="color" id="char-color" value="#00f2ff" style="height: 40px;">
+            <input type="color" id="char-color" value="#00f2ff">
             <button class="start-btn" onclick="initGame()">دخول السيرفر <i class="fas fa-arrow-right-to-bracket"></i></button>
         </div>
     </div>
@@ -96,10 +106,9 @@
     <div id="loading-screen">
         <div class="loading-content">
             <i class="fas fa-spinner loader-icon"></i>
-            <h2 id="load-percent" style="margin-bottom: 5px;">0%</h2>
-            <div id="load-tip">نصيحة: استخدم السلاح للدفاع عن نفسك خارج المركبة</div>
+            <h2 id="load-percent">0%</h2>
+            <div id="load-tip">جاري تحميل خريطة المدينة والشوارع...</div>
             <div class="progress-container"><div class="progress-fill" id="load-fill"></div></div>
-            <p id="load-status" style="font-size: 12px; margin-top: 10px; color: #555;">Loading City Assets...</p>
         </div>
     </div>
 
@@ -132,7 +141,7 @@
         
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x020205);
-        scene.fog = new THREE.Fog(0x020205, 10, 100);
+        scene.fog = new THREE.Fog(0x020205, 10, 150);
 
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -140,49 +149,90 @@
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         document.body.appendChild(renderer.domElement);
 
-        const light = new THREE.AmbientLight(0xffffff, 0.2);
+        const light = new THREE.AmbientLight(0xffffff, 0.3);
         scene.add(light);
-        const directional = new THREE.DirectionalLight(0x00f2ff, 1);
-        directional.position.set(5, 10, 5);
+        const directional = new THREE.DirectionalLight(0x00f2ff, 0.8);
+        directional.position.set(50, 100, 50);
         scene.add(directional);
 
+        // --- بناء المدينة والشوارع ---
+        function createCity() {
+            // الأرضية (أسفلت)
+            const groundGeo = new THREE.PlaneGeometry(2000, 2000);
+            const groundMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
+            const ground = new THREE.Mesh(groundGeo, groundMat);
+            ground.rotation.x = -Math.PI / 2;
+            scene.add(ground);
+
+            // إضافة خطوط الشارع
+            const grid = new THREE.GridHelper(2000, 40, 0x333333, 0x222222);
+            scene.add(grid);
+
+            // إضافة مباني بسيطة حول المركز
+            for(let i=0; i<40; i++) {
+                const h = Math.random() * 20 + 5;
+                const bGeo = new THREE.BoxGeometry(10, h, 10);
+                const bMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a });
+                const b = new THREE.Mesh(bGeo, bMat);
+                b.position.set(Math.random()*400-200, h/2, Math.random()*400-200);
+                // ابعاد المباني عن منطقة البداية
+                if (b.position.length() > 30) scene.add(b);
+            }
+        }
+        createCity();
+
         // موديل السيارة
-        function createProCar() {
+        function createProCar(color = null) {
             const car = new THREE.Group();
-            const bodyMat = new THREE.MeshStandardMaterial({ color: role === 'police' ? 0x0011ff : 0xcc0000, metalness: 1, roughness: 0.1 });
+            const carColor = color || (role === 'police' ? 0x0011ff : 0xcc0000);
+            const bodyMat = new THREE.MeshStandardMaterial({ color: carColor, metalness: 0.8, roughness: 0.2 });
             const body = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.6, 3.2), bodyMat);
             body.position.y = 0.5;
             car.add(body);
-            const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.5, 1.6), new THREE.MeshStandardMaterial({color: 0x111111}));
+            const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.5, 1.6), new THREE.MeshStandardMaterial({color: 0x050505}));
             cabin.position.set(0, 1, 0.2);
             car.add(cabin);
             return car;
         }
 
-        // موديل الشخصية مع سلاح
-        function createPlayer() {
+        // موديل الشخصية
+        function createCharacter(color = 0x00f2ff) {
             const p = new THREE.Group();
-            const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.3, 1, 4, 8), new THREE.MeshStandardMaterial({color: document.getElementById('char-color').value}));
+            const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.3, 1, 4, 8), new THREE.MeshStandardMaterial({color: color}));
             body.position.y = 0.8;
             p.add(body);
-
-            // إضافة السلاح (عبارة عن مكعب أسود طويل)
             const gun = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.15, 0.8), new THREE.MeshStandardMaterial({color: 0x000000}));
             gun.position.set(0.4, 1, 0.3);
             p.add(gun);
-
-            p.visible = false;
             return p;
         }
 
         let myCar = createProCar();
-        let myChar = createPlayer();
+        let myChar = createCharacter();
+        myChar.visible = false;
         scene.add(myCar, myChar);
 
-        const ground = new THREE.Mesh(new THREE.PlaneGeometry(1000, 1000), new THREE.MeshStandardMaterial({color: 0x0d0d0d}));
-        ground.rotation.x = -Math.PI/2;
-        scene.add(ground);
-        scene.add(new THREE.GridHelper(1000, 100, 0x00f2ff, 0x111111));
+        // إضافة بوتات (شخصيات وسيارات أخرى)
+        function spawnWorldNPCs() {
+            for(let i=0; i<10; i++) {
+                const npcCar = createProCar(Math.random() * 0xffffff);
+                npcCar.position.set(Math.random()*100-50, 0, Math.random()*100-50);
+                if(npcCar.position.length() > 10) scene.add(npcCar);
+
+                const npcChar = createCharacter(Math.random() * 0xffffff);
+                npcChar.position.set(Math.random()*100-50, 0, Math.random()*100-50);
+                if(npcChar.position.length() > 10) scene.add(npcChar);
+            }
+        }
+
+        function notify(text) {
+            const container = document.getElementById('notifications');
+            const div = document.createElement('div');
+            div.className = 'notif';
+            div.innerHTML = `<i class="fas fa-info-circle"></i> ${text}`;
+            container.appendChild(div);
+            setTimeout(() => div.remove(), 4000);
+        }
 
         function setRole(r) {
             role = r;
@@ -191,19 +241,16 @@
         }
 
         function initGame() {
+            const user = document.getElementById('username').value || "لاعب مجهول";
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('loading-screen').style.display = 'flex';
             
             let progress = 0;
-            const tips = ["جاري تجهيز الأسلحة...", "جاري فحص اتصال السيرفر...", "جاري تحميل خريطة المدينة...", "تأكد من ربط حزام الأمان!"];
-            
             const interval = setInterval(() => {
-                progress += Math.random() * 8;
+                progress += Math.random() * 10;
                 if(progress > 100) progress = 100;
-                
                 document.getElementById('load-fill').style.width = progress + '%';
                 document.getElementById('load-percent').innerText = Math.floor(progress) + '%';
-                document.getElementById('load-tip').innerText = tips[Math.floor(progress/30)] || tips[3];
 
                 if(progress >= 100) {
                     clearInterval(interval);
@@ -211,7 +258,11 @@
                         document.getElementById('loading-screen').style.display = 'none';
                         gameActive = true;
                         myCar.children[0].material.color.set(role === 'police' ? 0x0011ff : 0xcc0000);
-                        document.getElementById('hud-user').innerText = document.getElementById('username').value || "Pro Player";
+                        document.getElementById('hud-user').innerText = user;
+                        spawnWorldNPCs();
+                        notify(`انضم ${user} إلى الغرفة`);
+                        // محاكاة دخول أشخاص آخرين بعد فترة
+                        setTimeout(() => notify("انضم Ahmed_Hero إلى الغرفة"), 3000);
                     }, 500);
                 }
             }, 100);
@@ -225,11 +276,10 @@
         };
         bind('btn-up', 'up'); bind('btn-down', 'down'); bind('btn-left', 'left'); bind('btn-right', 'right');
 
-        // نظام إطلاق النار
         document.getElementById('btn-fire').addEventListener('touchstart', (e) => {
             e.preventDefault();
-            const flash = new THREE.PointLight(0xffff00, 2, 5);
-            flash.position.copy(myChar.position).y += 1;
+            const flash = new THREE.PointLight(0xffff00, 3, 10);
+            flash.position.copy(myChar.position).y += 1.2;
             scene.add(flash);
             setTimeout(() => scene.remove(flash), 50);
         });
@@ -256,7 +306,7 @@
                 text.innerText = "ركوب";
                 icon.className = "fas fa-walking";
                 btn.style.background = "#27ae60";
-                fireBtn.style.display = "flex"; // إظهار السلاح عند المشي
+                fireBtn.style.display = "flex";
             }
         });
 
@@ -284,12 +334,18 @@
                 document.getElementById('speed-num').innerText = "0";
             }
 
-            const offset = new THREE.Vector3(0, 4, 10).applyMatrix4(target.matrixWorld);
+            const offset = new THREE.Vector3(0, 5, 12).applyMatrix4(target.matrixWorld);
             camera.position.lerp(offset, 0.1);
             camera.lookAt(target.position);
             renderer.render(scene, camera);
         }
         animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
     </script>
 </body>
 </html>
