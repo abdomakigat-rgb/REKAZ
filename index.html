@@ -1,702 +1,170 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" class="scroll-smooth">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="author" content="Ab Maki Experiments">
-    <meta name="theme-color" content="#F9F6F0">
-    <title>رِكاز 2026 | المنصة الملكية</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@700;900&family=Amiri:wght@700&family=Vazirmatn:wght@100;400;700;900&family=Cinzel:wght@900&family=Lalezar&display=swap" rel="stylesheet">
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        gold: '#C5A059',
-                        royal: '#8E6F3E',
-                        pearl: '#F9F6F0',
-                        cream: '#FFFFFF',
-                    },
-                    animation: {
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'float': 'float 3s ease-in-out infinite',
-                        'super-glow': 'superGlow 2s ease-in-out infinite',
-                    },
-                    keyframes: {
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-10px)' },
-                        },
-                        superGlow: {
-                            '0%, 100%': { filter: 'drop-shadow(0 0 15px rgba(197, 160, 89, 0.6)) brightness(1)' },
-                            '50%': { filter: 'drop-shadow(0 0 35px rgba(197, 160, 89, 0.8)) brightness(1.2)' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Street Wars: Multiplayer</title>
     <style>
-        body { font-family: 'Vazirmatn', sans-serif; background-color: #F9F6F0; color: #2D2D2D; overflow-x: hidden; }
-        
-        .brand-name { 
-            font-family: 'Alexandria', sans-serif; 
-            font-weight: 900;
-            background: linear-gradient(135deg, #8E6F3E 0%, #C5A059 50%, #8E6F3E 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-size: 200% auto;
-            animation: shine 3s linear infinite;
-            display: inline-block;
-            line-height: 1.2;
+        body { margin: 0; overflow: hidden; background-color: #000; font-family: sans-serif; }
+        #ui {
+            position: absolute; top: 20px; left: 20px; color: white;
+            background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px;
+            pointer-events: none;
         }
-
-        @keyframes shine {
-            to { background-position: 200% center; }
-        }
-
-        #splash-screen {
-            background: radial-gradient(circle at center, #ffffff 0%, #F9F6F0 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .power-loader {
-            position: relative;
-            width: 280px;
-            height: 280px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .loader-ring {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border: 2px solid transparent;
-            border-top-color: #C5A059;
-            border-radius: 50%;
-            animation: rotate 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
-            z-index: 10;
-        }
-
-        .loader-ring-inner {
-            position: absolute;
-            width: 85%;
-            height: 85%;
-            border: 4px solid transparent;
-            border-bottom-color: #8E6F3E;
-            border-radius: 50%;
-            animation: rotate 2s linear infinite reverse;
-            opacity: 0.3;
-            z-index: 5;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .glass-panel { 
-            background: rgba(255, 255, 255, 0.8); 
-            backdrop-filter: blur(15px); 
-            border: 1px solid rgba(197, 160, 89, 0.2); 
-            box-shadow: 0 20px 40px rgba(142, 111, 62, 0.05); 
-        }
-        
-        #gemini-chat-window {
-            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-            transform: scale(0.9) translateY(40px); opacity: 0; pointer-events: none;
-        }
-        #gemini-chat-window.active { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
-        
-        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #F3EFE7; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #C5A059; border-radius: 10px; }
-        
-        .book-content h2 { color: #8E6F3E; font-family: 'Alexandria', sans-serif; font-weight: 700; font-size: 1.5rem; margin-top: 2rem; border-right: 4px solid #C5A059; padding-right: 12px; margin-bottom: 1rem; }
-        .book-content h3 { color: #C5A059; font-weight: 700; margin-top: 1.5rem; }
-        .book-content p { line-height: 1.8; margin-bottom: 1.2rem; text-align: justify; color: #4A4A4A; font-size: 0.95rem; }
-        .book-content ul { list-style: circle; padding-right: 20px; margin-bottom: 1rem; color: #555; }
-
-        .post-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-        .post-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(142, 111, 62, 0.1); }
-        .nav-btn.active { color: #C5A059; transform: scale(1.1); }
-        .achievement-badge { filter: grayscale(1); transition: all 0.5s ease; }
-        .achievement-badge.unlocked { filter: grayscale(0); transform: scale(1.1); border-color: #C5A059; }
-
-        .summary-card { border-right: 4px solid #C5A059; transition: all 0.3s ease; }
-        .summary-card:hover { background: #C5A059; color: white; }
-        .quiz-option { border: 1px solid #C5A05920; transition: all 0.2s; }
-        .quiz-option:hover { background: #C5A05910; border-color: #C5A059; }
+        .controls { font-size: 12px; color: #ccc; }
     </style>
 </head>
-<body class="antialiased">
+<body>
 
-    <div id="splash-screen" class="fixed inset-0 z-[1000] transition-all duration-1000">
-        <div class="power-loader">
-            <div class="loader-ring"></div>
-            <div class="loader-ring-inner"></div>
-            <h1 class="text-7xl font-black brand-name select-none animate-super-glow relative z-50">رِكاز</h1>
-        </div>
-        <div class="mt-12 flex flex-col items-center">
-            <p id="loading-text" class="text-royal font-black tracking-[0.3em] text-[12px] uppercase mb-4 animate-pulse">يتم استحضار العظمة...</p>
-            <div class="w-64 h-1.5 bg-gold/10 rounded-full overflow-hidden p-0.5 border border-gold/5">
-                <div id="progress-bar" class="w-0 h-full bg-gradient-to-r from-gold to-royal rounded-full transition-all duration-700 shadow-[0_0_15px_#C5A059]"></div>
-            </div>
-        </div>
+    <div id="ui">
+        <h2>Street Wars Online</h2>
+        <div id="status">جاري الاتصال بالسيرفر...</div>
+        <div class="controls">استخدم الأسهم للتحرك | ESC للخروج</div>
     </div>
 
-    <section id="auth-gate" class="min-h-screen flex items-center justify-center p-4 relative z-50 bg-[radial-gradient(circle_at_top_right,_#C5A05915,_transparent)]">
-        <div class="glass-panel w-full max-w-lg p-10 rounded-[3rem]">
-            <div class="text-center mb-8">
-                <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-sm border border-gold/10">
-                    <i data-lucide="shield-check" class="text-gold w-8 h-8"></i>
-                </div>
-                <h2 class="text-6xl font-black brand-name mb-2 py-2">رِكاز</h2>
-                <p id="auth-subtitle" class="text-gray-400 text-xs font-medium tracking-[0.1em]">عالم من المعرفة الراقية</p>
-            </div>
-
-            <div class="flex bg-gold/5 p-1 rounded-2xl border border-gold/10 mb-8">
-                <button onclick="toggleAuthMode('login')" id="btn-login-tab" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all bg-gold text-white shadow-md">دخول</button>
-                <button onclick="toggleAuthMode('signup')" id="btn-signup-tab" class="flex-1 py-3 rounded-xl font-bold text-sm transition-all text-gold/60">حساب جديد</button>
-            </div>
-
-            <div class="space-y-4">
-                <div id="signup-fields" class="hidden">
-                    <div class="flex justify-center mb-6">
-                        <label class="relative cursor-pointer group">
-                            <div class="w-24 h-24 rounded-full border-2 border-dashed border-gold/30 flex items-center justify-center overflow-hidden bg-white group-hover:border-gold transition-all">
-                                <img id="pfp-preview" class="hidden w-full h-full object-cover">
-                                <i data-lucide="user-plus" class="text-gold/40 group-hover:text-gold"></i>
-                            </div>
-                            <input type="file" class="hidden" onchange="previewImage(this)" id="reg-pfp">
-                        </label>
-                    </div>
-                </div>
-                
-                <div class="relative">
-                    <i data-lucide="user" class="absolute right-4 top-4 text-gold/30 w-5 h-5"></i>
-                    <input type="text" id="auth-user" placeholder="اسمك الكريم" class="w-full bg-white border border-gold/10 p-4 pr-12 rounded-2xl outline-none focus:border-gold/50 text-gray-700 transition-all">
-                </div>
-                <div class="relative">
-                    <i data-lucide="lock-keyhole" class="absolute right-4 top-4 text-gold/30 w-5 h-5"></i>
-                    <input type="password" id="auth-pass" placeholder="كلمة المرور" class="w-full bg-white border border-gold/10 p-4 pr-12 rounded-2xl outline-none focus:border-gold/50 text-gray-700 transition-all">
-                </div>
-
-                <button onclick="handleAuth()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-gold to-royal text-white font-black mt-4 hover:shadow-lg hover:shadow-gold/20 active:scale-95 transition-all">
-                    دخول المنصة
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <div id="main-app" class="hidden opacity-0 transition-all duration-1000">
-        <header class="sticky top-0 z-[100] bg-white/70 backdrop-blur-xl border-b border-gold/10 p-4 md:px-16 flex justify-between items-center">
-            <div class="flex items-center gap-4">
-                <button onclick="openProfileEdit()" class="relative group">
-                    <div class="w-12 h-12 rounded-full p-0.5 bg-gold/20">
-                        <img id="user-avatar" src="" class="w-full h-full rounded-full object-cover border-2 border-white">
-                    </div>
-                </button>
-                <div>
-                    <h3 id="user-name-display" class="font-bold text-gray-800 text-sm">المستخدم</h3>
-                    <p class="text-[9px] text-gold font-black uppercase tracking-tighter italic">عضو ملكي مستنير</p>
-                </div>
-            </div>
-            <h1 class="brand-name text-4xl font-bold md:block hidden">رِكاز</h1>
-            <button onclick="logoutMaki()" class="p-3 bg-red-50 text-red-400 rounded-xl hover:bg-red-100 transition-all"><i data-lucide="log-out" class="w-5 h-5"></i></button>
-        </header>
-
-        <main class="max-w-4xl mx-auto p-6 pb-40 space-y-12">
-            <div id="section-home" class="space-y-12">
-                <section id="feed" class="space-y-6">
-                    <div class="glass-panel p-6 rounded-3xl border-none shadow-sm animate-float">
-                        <textarea id="post-input" placeholder="اكتب فكرة تليق بمقام رِكاز..." class="w-full bg-transparent p-2 rounded-2xl outline-none resize-none h-24 text-gray-600 font-medium"></textarea>
-                        <div class="flex justify-between items-center mt-2">
-                            <span class="text-[10px] text-gold/60 font-bold">كل مشاركة تزيد من رِكاز معرفتك</span>
-                            <button onclick="createPost()" class="px-8 py-2 bg-gold text-white rounded-xl font-bold text-xs shadow-md shadow-gold/20 hover:scale-105 transition-transform">نشر</button>
-                        </div>
-                    </div>
-                    <div id="posts-container" class="space-y-6"></div>
-                </section>
-            </div>
-
-            <div id="section-books" class="hidden space-y-10 animate-in fade-in duration-700">
-                <div class="glass-panel p-10 rounded-[2.5rem]">
-                    <div class="flex items-center justify-between mb-8">
-                        <div class="flex items-center gap-4">
-                            <i data-lucide="library" class="text-gold w-8 h-8"></i>
-                            <h2 class="text-4xl font-bold brand-name">المكتبة</h2>
-                        </div>
-                        <select onchange="updateBookContent(this.value)" class="bg-gold/5 border border-gold/20 rounded-xl px-4 py-2 text-xs font-bold outline-none">
-                            <option value="fiqh">الفقه المالكي</option>
-                            <option value="tawhid">التوحيد (الجوهرة)</option>
-                            <option value="tafsir">التفسير (النسفي)</option>
-                            <option value="nahw">النحو (ابن عقيل)</option>
-                            <option value="sarf">الصرف الميسر</option>
-                            <option value="adab">الأدب والنصوص</option>
-                            <option value="mantiq">المنطق (الملوي)</option>
-                            <option value="mutalaa">المطالعة والإنشاء</option>
-                        </select>
-                    </div>
-                    <div id="book-display-area" class="book-content custom-scrollbar h-[550px] overflow-y-auto px-4">
-                        </div>
-                </div>
-            </div>
-
-            <div id="section-summaries" class="hidden space-y-8 animate-in fade-in duration-700">
-                <h2 class="text-3xl font-black brand-name border-b-2 border-gold/10 pb-4">موجز العباقرة</h2>
-                <div class="grid md:grid-cols-2 gap-4" id="summaries-grid">
-                    </div>
-            </div>
-
-            <div id="section-quizzes" class="hidden space-y-8 animate-in fade-in duration-700">
-                <div class="glass-panel p-8 rounded-[2.5rem]">
-                    <h2 class="text-2xl font-black text-royal mb-6 flex items-center gap-3">
-                        <i data-lucide="clipboard-check"></i> اختبارات قياس المستوى
-                    </h2>
-                    <div id="quiz-container" class="space-y-6">
-                        <p class="text-center text-gray-400 py-20">اختر مادة من القائمة لبدء الاختبار التفاعلي</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="section-medals" class="hidden space-y-10 animate-in fade-in duration-700">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <div id="medal-1" class="achievement-badge glass-panel p-6 rounded-3xl text-center border-2">
-                        <i data-lucide="star" class="w-10 h-10 mx-auto text-gold mb-2"></i>
-                        <h4 class="text-xs font-bold">بداية الرحلة</h4>
-                        <p class="text-[8px] text-gray-400">سجلت دخولك الأول</p>
-                    </div>
-                    <div id="medal-2" class="achievement-badge glass-panel p-6 rounded-3xl text-center border-2">
-                        <i data-lucide="pen-tool" class="w-10 h-10 mx-auto text-gold mb-2"></i>
-                        <h4 class="text-xs font-bold">ناشر العلم</h4>
-                        <p class="text-[8px] text-gray-400">نشرت أول فكرة لك</p>
-                    </div>
-                    <div id="medal-3" class="achievement-badge glass-panel p-6 rounded-3xl text-center border-2">
-                        <i data-lucide="message-square" class="w-10 h-10 mx-auto text-gold mb-2"></i>
-                        <h4 class="text-xs font-bold">صديق Gemini</h4>
-                        <p class="text-[8px] text-gray-400">تحدثت مع المساعد</p>
-                    </div>
-                    <div id="medal-4" class="achievement-badge glass-panel p-6 rounded-3xl text-center border-2">
-                        <i data-lucide="crown" class="w-10 h-10 mx-auto text-gold mb-2"></i>
-                        <h4 class="text-xs font-bold">المستنير</h4>
-                        <p class="text-[8px] text-gray-400">تصفحت المكتبة كاملة</p>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <div id="gemini-chat-window" class="fixed bottom-32 left-6 right-6 md:left-auto md:right-12 md:w-[360px] z-[300]">
-            <div class="glass-panel p-6 rounded-[2.5rem] h-[480px] flex flex-col border-gold/20 shadow-2xl">
-                <div class="flex items-center justify-between mb-4 border-b border-gold/10 pb-2">
-                    <div class="flex items-center gap-2">
-                        <div class="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
-                        <span class="font-black text-gray-700 text-sm italic">Gemini Advanced</span>
-                    </div>
-                    <button onclick="toggleGemini()"><i data-lucide="x-circle" class="text-gray-400 w-5 h-5"></i></button>
-                </div>
-                <div id="chat-content" class="flex-1 overflow-y-auto custom-scrollbar space-y-4 mb-4 text-xs pr-2 text-gray-600 font-medium"></div>
-                <div class="relative">
-                    <input type="text" id="gemini-input" placeholder="اسأل وسنجيبك فوراً..." class="w-full bg-white border border-gold/10 p-4 rounded-2xl outline-none focus:border-royal text-gray-700 transition-all shadow-inner">
-                    <button onclick="sendToGemini()" class="absolute left-2 top-2 bg-gradient-to-tr from-gold to-royal p-2 rounded-xl text-white transition-transform active:scale-90 shadow-md">
-                        <i data-lucide="sparkles" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-lg h-20 bg-white/80 backdrop-blur-2xl rounded-full border border-gold/10 flex justify-around items-center z-[200] shadow-xl px-4">
-            <button onclick="showSection('home')" id="nav-home" class="nav-btn text-gold transition-all"><i data-lucide="layout-grid"></i></button>
-            <button onclick="showSection('books')" id="nav-books" class="nav-btn text-gray-300 transition-all"><i data-lucide="book-marked"></i></button>
-            <button onclick="showSection('summaries')" id="nav-summaries" class="nav-btn text-gray-300 transition-all"><i data-lucide="file-text"></i></button>
-            <button onclick="toggleGemini()" class="w-14 h-14 bg-gradient-to-b from-gold to-royal rounded-2xl flex items-center justify-center text-white shadow-lg -mt-10 border-4 border-pearl transition-transform hover:scale-110 active:scale-95">
-                <i data-lucide="zap"></i>
-            </button>
-            <button onclick="showSection('quizzes')" id="nav-quizzes" class="nav-btn text-gray-300 transition-all"><i data-lucide="pen-tool"></i></button>
-            <button onclick="showSection('medals')" id="nav-medals" class="nav-btn text-gray-300 transition-all"><i data-lucide="medal"></i></button>
-        </nav>
-    </div>
-
-    <div id="profile-modal" class="fixed inset-0 z-[1000] bg-white/80 hidden items-center justify-center p-6 backdrop-blur-md">
-        <div class="glass-panel w-full max-sm:w-full max-w-sm p-8 rounded-[3rem] text-center">
-            <h3 class="text-xl font-bold text-gold mb-6">تحديث البيانات الملكية</h3>
-            <div class="flex justify-center mb-6">
-                <label class="relative cursor-pointer group">
-                    <img id="edit-pfp-preview" class="w-24 h-24 rounded-3xl border-2 border-gold/20 object-cover p-1 group-hover:scale-105 transition-transform">
-                    <div class="absolute inset-0 bg-black/20 rounded-3xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"><i data-lucide="camera" class="text-white"></i></div>
-                    <input type="file" class="hidden" onchange="updateProfilePFP(this)">
-                </label>
-            </div>
-            <input type="text" id="edit-name-input" class="w-full bg-white border border-gold/10 p-4 rounded-xl mb-4 text-center font-bold" placeholder="الاسم الجديد">
-            <div class="flex gap-2">
-                <button onclick="saveProfileChanges()" class="flex-1 py-3 bg-gold text-white rounded-xl font-bold hover:shadow-lg">تأكيد</button>
-                <button onclick="closeProfileEdit()" class="flex-1 py-3 bg-gray-50 text-gray-400 rounded-xl">تراجع</button>
-            </div>
-        </div>
-    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 
     <script>
-        lucide.createIcons();
-        let authMode = 'login';
-        let currentUser = null;
+        // 1. إعداد السيرفر (استبدل الرابط برابط سيرفرك عند الرفع)
+        const socket = io('http://localhost:3000');
+        
+        // 2. إعداد مشهد Three.js
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x111111);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
 
-        const subjectsData = {
-            fiqh: {
-                title: "الفقه المالكي (الشرح الصغير)",
-                content: `<h2>كتاب البيوع</h2><p>البيع لغة: مقابلة شيء بشيء. واصطلاحاً: عقد معاوضة على غير منافع ولا متعة لذة، ذو مكايسة.</p><h3>أركان البيع:</h3><ul><li>العاقدان: البائع والمشتري.</li><li>المعقود عليه: الثمن والمثمن.</li><li>الصيغة: الإيجاب والقبول.</li></ul><h2>باب الربا</h2><p>الربا محرم بالكتاب والسنة والإجماع. والعلة في الذهب والفضة هي الثمنية غالباً، وفي الطعام الاقتيات والادخار.</p><h2>أحكام الضمان والشركة</h2><p>الضمان هو شغل ذمة شخص بطلب حق لآخر. والشركة هي تمحض استحقاق في شيء لواحد فأكثر.</p>`,
-                summary: "البيع عقد معاوضة يشترط فيه الرضا والطهارة. الربا محرم في المقتات والمدخر كالحبوب والزيوت. الضمان هو التزام حق ثابت في ذمة الغير.",
-                quiz: [
-                    { q: "ما هو تعريف البيع اصطلاحاً عند المالكية؟", options: ["عقد معاوضة ذو مكايسة", "مطلق مقابلة شيء بشيء", "تملك العين بلا عوض"], correct: 0 },
-                    { q: "ما هي علة الربا في الذهب والفضة؟", options: ["الوزن", "الثمنية", "الجمال"], correct: 1 },
-                    { q: "من أركان البيع: الصيغة، وهي عبارة عن..؟", options: ["القبول فقط", "الإيجاب فقط", "الإيجاب والقبول"], correct: 2 }
-                ]
-            },
-            tawhid: {
-                title: "التوحيد (تيسير الجوهرة)",
-                content: `<h2>أفعال العباد والكسب</h2><p>مذهب أهل السنة (الأشاعرة والماتريدية) أن للعبد قدرة واختياراً غير مؤثرين في الخلق، بل الفعل خلق لله وكسب للعبد.</p><h2>المعجزات والكرامات</h2><p>المعجزة: أمر خارق للعادة يظهره الله على يد مدعي النبوة. الكرامة: أمر خارق للعادة يظهره الله على يد عبد صالح (ولي) غير مدعٍ للنبوة.</p><h2>السمعيات</h2><p>تشمل الإيمان بالصحابة، والوعد والوعيد، والقضاء والقدر، وسؤال الملكين.</p>`,
-                summary: "الكسب هو تعلق قدرة العبد الحادثة بالفعل دون تأثيرة. المعجزة تأييد للنبي، والكرامة إكرام للولي. مذهبنا في الصحابة هو الكف عما شجر بينهم.",
-                quiz: [
-                    { q: "ما هو مذهب أهل السنة في أفعال العباد؟", options: ["الجبر المحض", "الاختيار والقدرة المؤثرة", "الكسب"], correct: 2 },
-                    { q: "الأمر الخارق للعادة الذي يظهر على يد الولي يسمى..؟", options: ["معجزة", "كرامة", "سحر"], correct: 1 }
-                ]
-            },
-            tafsir: {
-                title: "التفسير (تيسير النسفي)",
-                content: `<h2>سورة المزمل</h2><p>محور السورة: ثقل الوحي وقيام الليل. الآيات تأمر النبي صلى الله عليه وسلم بالاستعداد لحمل القول الثقيل (القرآن) بالصلاة والذكر.</p><h2>سورة المدثر</h2><p>تتضمن وصايا للنبي في بدء الدعوة، وتهديداً لزعماء المشركين (كالوليد بن المغيرة)، بيان عدد خزنة جهنم (تسعة عشر).</p><h2>سورة القيامة</h2><p>تثبت البعث وترد على منكريه، وتصور أهوال القيامة وحرص النبي على حفظ القرآن عند نزول الوحي.</p>`,
-                summary: "سورة المزمل تدعو لقيام الليل والتبتل. المدثر تأمر بالإنذار والتحذير من النار. القيامة تؤكد قدرة الله على جمع العظام وبعث الناس.",
-                quiz: [
-                    { q: "ما معنى 'قولاً ثقيلاً' في سورة المزمل؟", options: ["صعب النطق", "عظيم القدر والمكانة", "كثير الكلمات"], correct: 1 },
-                    { q: "كم عدد خزنة جهنم المذكورين في سورة المدثر؟", options: ["عشرة", "ألف", "تسعة عشر"], correct: 2 }
-                ]
-            },
-            nahw: {
-                title: "النحو (شرح ابن عقيل)",
-                content: `<h2>النائب عن الفاعل</h2><p>إذا حذف الفاعل أقيم مقامه المفعول به، فإن لم يوجد فالمصدر أو الظرف أو الجار والمجرور بشروط.</p><h2>اشتغال العامل عن المعمول</h2><p>أن يتقدم اسم ويتأخر عنه فعل اشتغل بضميره عن نصب ذلك الاسم.</p><h2>التنازع في العمل</h2><p>أن يتوجه عاملان أو أكثر إلى معمول واحد، كقولك: 'ضربت وأكرمتُ زيداً'.</p><h2>المفعول المطلق</h2><p>هو المصدر المنتصب لتوكيد عامله أو لبيان نوعه أو عدده.</p>`,
-                summary: "ينوب عن الفاعل المفعول به غالباً. التنازع يقع بين فعلين على اسم واحد. المفعول المطلق مصدر يؤكد الفعل أو يبين النوع.",
-                quiz: [
-                    { q: "ما هو الأصل في ما ينوب عن الفاعل؟", options: ["الظرف", "المفعول به", "المصدر"], correct: 1 },
-                    { q: "في جملة 'أكلت أكلاً'، نوع المفعول المطلق هو..؟", options: ["مبين للنوع", "مبين للعدد", "مؤكد لعامله"], correct: 2 }
-                ]
-            },
-            sarf: {
-                title: "الصرف الميسر (الأسماء)",
-                content: `<h2>تثنية وجمع الاسم المنقوص والمقصور</h2><p>المقصور: هو الاسم المنتهي بألف لازمة. المنقوص: هو الاسم المنتهي بياء لازمة مكسور ما قبلها.</p><h2>التصغير</h2><p>صيغ التصغير: فُعَيْل (للثلاثي)، فُعَيْعِل (للرباعي)، فُعَيْعِيل (للخماسي). أغراضه: التقليل، التحقير، أو التمليح.</p><h2>النسب</h2><p>إضافة ياء مشددة لآخر الاسم للدلالة على نسبة شيء إليه، مثل: مصريّ، أزهريّ.</p>`,
-                summary: "التصغير له ثلاث صيغ قياسية. النسب يلحق ياء مشددة بالاسم. المقصور تقلب ألفه ياءً إذا كانت رابعة فأكثر عند التثنية.",
-                quiz: [
-                    { q: "ما هي صيغة تصغير الاسم الرباعي؟", options: ["فُعَيْل", "فُعَيْعِل", "فُعَيْعِيل"], correct: 1 },
-                    { q: "الاسم المنتهي بياء لازمة مكسور ما قبلها يسمى..؟", options: ["مقصوراً", "ممدوداً", "منقوصاً"], correct: 2 }
-                ]
-            },
-            adab: {
-                title: "الأدب والنصوص",
-                content: `<h2>الأدب الأندلسي</h2><p>نشأ الأدب في الأندلس متأثراً بالمشرق ثم استقل بشخصيته، وظهرت فنون جديدة كالموشحات نتيجة لجمال الطبيعة والاختلاط الاجتماعي.</p><h2>الشعراء والمذاهب</h2><p>اشتهر ابن زيدون في الرسالة الجدية، والرندي في رثاء الأندلس. الأدب ينمي الثروة اللغوية ويعين على فهم إعجاز القرآن.</p>`,
-                summary: "الأدب الأندلسي يتميز بوصف الطبيعة والموشحات. ابن زيدون من أبرز شعراء الأندلس. رثاء الممالك فن ظهر بقوة مع سقوط المدن.",
-                quiz: [
-                    { q: "ما هو الفن الشعري الذي استحدثه الأندلسيون? ", options: ["النقائض", "الموشحات", "المعلقات"], correct: 1 }
-                ]
-            },
-            mantiq: {
-                title: "المنطق (تيسير الملوي)",
-                content: `<h2>القضايا وأحكامها</h2><p>القضية هي قول يحتمل الصدق والكذب لذاته. تنقسم لحملية وشرطية.</p><h2>التناقض</h2><p>هو اختلاف القضيتين في الكيف (الإيجاب والسلب) بحيث يلزم من صدق إحداهما كذب الأخرى.</p><h2>القياس</h2><p>هو قول مؤلف من قضايا متى سلمت لزم عنها لذاتها قول آخر.</p>`,
-                summary: "المنطق يعصم الذهن من الخطأ. القضية الحملية تتكون من موضوع ومحمول. القياس هو عمدة الاستدلال المنطقي.",
-                quiz: [
-                    { q: "القضية التي تحتمل الصدق والكذب تسمى..؟", options: ["إنشاءً", "خبراً (قضية)", "تصوراً"], correct: 1 }
-                ]
-            },
-            mutalaa: {
-                title: "المطالعة والإنشاء",
-                content: `<h2>الموضوعات والقيم</h2><p>تشمل موضوعات مثل: النمل والنحل (التعاون)، القدس عاصمة فلسطين، التلوث، والنصيحة.</p><h2>فن الإنشاء</h2><p>يتناول الإنشاء الشفهي والحواري، والمناظرة، وفن الخطابة (مثل خطبة أبي بكر الصديق)، والمحاضرة.</p>`,
-                summary: "المطالعة تنمي الانتماء وترشد الفكر. الإنشاء يعلم الطالب فنون الخطابة والمناظرة والحوار الراقي.",
-                quiz: [
-                    { q: "أي من هذه الفنون يعتبر من الإنشاء الشفهي؟", options: ["الرسائل", "المقالات", "الخطابة"], correct: 2 }
-                ]
-            }
-        };
+        // إضاءة احترافية
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+        const sunLight = new THREE.DirectionalLight(0xffffff, 1);
+        sunLight.position.set(5, 10, 7);
+        scene.add(sunLight);
 
-        function updateBookContent(sub) {
-            const data = subjectsData[sub] || { title: "قريباً", content: "<p>جاري رفع المحتوى الملكي لهذه المادة...</p>" };
-            document.getElementById('book-display-area').innerHTML = data.content;
-            document.getElementById('book-display-area').scrollTop = 0;
+        // أرضية المدينة (Grid)
+        const grid = new THREE.GridHelper(200, 50, 0x444444, 0x222222);
+        scene.add(grid);
+
+        // 3. تعريف اللاعبين
+        let otherPlayers = {};
+        let myCar;
+
+        // دالة لإنشاء شكل سيارة
+        function createCar(color = 0x00ff00) {
+            const group = new THREE.Group();
+            // جسم السيارة
+            const body = new THREE.Mesh(
+                new THREE.BoxGeometry(1.2, 0.6, 2.5),
+                new THREE.MeshStandardMaterial({ color: color })
+            );
+            body.position.y = 0.3;
+            group.add(body);
+            // سقف السيارة
+            const roof = new THREE.Mesh(
+                new THREE.BoxGeometry(1, 0.5, 1.2),
+                new THREE.MeshStandardMaterial({ color: color })
+            );
+            roof.position.y = 0.8;
+            roof.position.z = -0.2;
+            group.add(roof);
+            return group;
         }
 
-        function loadSummaries() {
-            const grid = document.getElementById('summaries-grid');
-            grid.innerHTML = Object.keys(subjectsData).map(key => `
-                <div class="glass-panel p-6 summary-card cursor-pointer" onclick="showSection('books'); updateBookContent('${key}')">
-                    <div class="flex justify-between items-start mb-2">
-                         <h4 class="font-black text-royal text-sm">${subjectsData[key].title}</h4>
-                         <i data-lucide="chevron-left" class="w-4 h-4 text-gold"></i>
-                    </div>
-                    <p class="text-[10px] text-gray-500 leading-relaxed">${subjectsData[key].summary}</p>
-                </div>
-            `).join('');
-            lucide.createIcons();
-        }
+        // إنشاء سيارتي أنا
+        myCar = createCar(0x00ff00); // أخضر للاعب الحالي
+        scene.add(myCar);
 
-        function startQuiz(sub) {
-            const data = subjectsData[sub];
-            const container = document.getElementById('quiz-container');
-            if(!data || !data.quiz) {
-                container.innerHTML = `<p class="text-center text-gold font-bold">عذراً، اختبار ${sub} قيد الإعداد.</p>`;
-                return;
-            }
-            container.innerHTML = `
-                <div class="mb-6 p-4 bg-gold/10 rounded-2xl flex justify-between items-center">
-                    <span class="font-bold text-royal">${data.title}</span>
-                    <button onclick="showSection('quizzes')" class="text-[10px] bg-white px-3 py-1 rounded-lg shadow-sm">تغيير المادة</button>
-                </div>
-            ` + data.quiz.map((item, idx) => `
-                <div class="space-y-4 p-4 bg-white rounded-2xl border border-gold/10 mb-4 shadow-sm">
-                    <p class="font-bold text-sm text-gray-700">${idx+1}. ${item.q}</p>
-                    <div class="grid gap-2">
-                        ${item.options.map((opt, oIdx) => `
-                            <button onclick="checkAnswer(this, ${oIdx === item.correct})" class="quiz-option p-3 rounded-xl text-right text-xs font-medium transition-all">${opt}</button>
-                        `).join('')}
-                    </div>
-                </div>
-            `).join('');
-        }
+        // 4. نظام التحكم
+        const keys = { ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false };
+        window.addEventListener('keydown', e => keys[e.code] = true);
+        window.addEventListener('keyup', e => keys[e.code] = false);
 
-        function checkAnswer(btn, isCorrect) {
-            const siblings = btn.parentElement.querySelectorAll('button');
-            siblings.forEach(s => s.disabled = true);
-            
-            btn.style.background = isCorrect ? '#dcfce7' : '#fee2e2';
-            btn.style.borderColor = isCorrect ? '#22c55e' : '#ef4444';
-            btn.classList.add('scale-95');
-            
-            if(isCorrect) {
-                unlockMedal(4);
-                btn.innerHTML += ' <i data-lucide="check-circle-2" class="inline w-3 h-3 text-green-600 mr-2"></i>';
-            } else {
-                btn.innerHTML += ' <i data-lucide="alert-circle" class="inline w-3 h-3 text-red-600 mr-2"></i>';
-            }
-            lucide.createIcons();
-        }
+        let speed = 0;
+        const maxSpeed = 0.5;
+        const acceleration = 0.01;
+        const friction = 0.005;
 
-        const geminiLogic = (query) => {
-            query = query.trim().toLowerCase();
-            unlockMedal(3);
-
-            const curriculum = [
-                { keys: ["بيع", "تجارة", "خيار", "ثمن"], response: "في الفقه المالكي، البيع عقد معاوضة يشترط فيه الرضا. هل تقصد أركان البيع أم أحكام الخيارات؟" },
-                { keys: ["فاعل", "نحو", "ابن عقيل", "نائب", "مفعول"], response: "النحو ميزان الكلام! تذكر أن الفاعل دائماً مرفوع. هل تريد أمثلة على 'نائب الفاعل' أو 'التنازع'؟" },
-                { keys: ["توحيد", "كسب", "أشاعرة", "جوهرة"], response: "علم التوحيد هو ركاز العقيدة. الكسب عند أهل السنة هو تعلق قدرة العبد بالفعل خلقاً من الله واكتساباً من العبد." },
-                { keys: ["تصغير", "صرف", "نسب"], response: "الصرف علم ممتع! التصغير له أوزان محددة: فُعَيْل، فُعَيْعِل، وفُعَيْعِيل. أي كلمة تريد تصغيرها؟" },
-                { keys: ["أندلس", "أدب", "نصوص", "ابن زيدون"], response: "الأدب الأندلسي رقيق كطبيعتهم. هل تريد الحديث عن الموشحات أم الرسالة الجدية لابن زيدون؟" }
-            ];
-
-            for (let item of curriculum) {
-                if (item.keys.some(k => query.includes(k))) {
-                    return `<b>[رِكاز الأكاديمي]:</b><br>${item.response}`;
-                }
-            }
-
-            if (query.includes("سلام") || query.includes("مرحب") || query.includes("اهلا")) {
-                return `أهلاً بك يا <b>${currentUser.name}</b> في رحاب رِكاز. أنا هنا لأكون رفيقك في رحلة العلم، ماذا نحضر اليوم؟`;
-            }
-            
-            const generalResponses = [
-                `سؤال ذكي جداً! بصفتي ذكاء رِكاز الاصطناعي، أرى أن "<b>${query}</b>" موضوع يستحق البحث.`,
-                `بناءً على تحليلي لطلبك، يبدو أنك تبحث عن المعرفة بعمق. هل يمكنني مساعدتك في تلخيص هذا الجزء؟`,
-                `مثير للاهتمام! دعنا نفكر في هذا معاً من منظور أدبي أو فقهي، ما رأيك؟`
-            ];
-
-            return generalResponses[Math.floor(Math.random() * generalResponses.length)];
-        };
-
-        function showSection(sectionId) {
-            ['home', 'books', 'medals', 'summaries', 'quizzes'].forEach(s => {
-                const el = document.getElementById('section-' + s);
-                if(el) el.classList.add('hidden');
-            });
-            document.getElementById('section-' + sectionId).classList.remove('hidden');
-            
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('text-gold', 'scale-110'));
-            const activeBtn = document.getElementById('nav-' + sectionId);
-            if(activeBtn) activeBtn.classList.add('text-gold', 'scale-110');
-            
-            if(sectionId === 'summaries') loadSummaries();
-            if(sectionId === 'quizzes') {
-                const container = document.getElementById('quiz-container');
-                container.innerHTML = `
-                    <p class="text-center text-gray-500 mb-8 text-xs">اختر المادة لاختبار معلوماتك الملكية</p>
-                    <div class="grid grid-cols-2 gap-4">
-                        ${Object.keys(subjectsData).map(key => `
-                            <button onclick="startQuiz('${key}')" class="p-4 bg-gold/5 border border-gold/10 rounded-2xl font-bold text-royal hover:bg-gold hover:text-white transition-all shadow-sm">
-                                <i data-lucide="graduation-cap" class="w-4 h-4 mx-auto mb-2 opacity-50"></i>
-                                ${subjectsData[key].title}
-                            </button>
-                        `).join('')}
-                    </div>
-                `;
-                lucide.createIcons();
-            }
-        }
-
-        function toggleAuthMode(mode) {
-            authMode = mode;
-            document.getElementById('signup-fields').style.display = mode === 'signup' ? 'block' : 'none';
-            document.getElementById('btn-login-tab').className = mode === 'login' ? 'flex-1 py-3 rounded-xl font-bold text-sm bg-gold text-white shadow-md' : 'flex-1 py-3 rounded-xl font-bold text-sm text-gold/60';
-            document.getElementById('btn-signup-tab').className = mode === 'signup' ? 'flex-1 py-3 rounded-xl font-bold text-sm bg-gold text-white shadow-md' : 'flex-1 py-3 rounded-xl font-bold text-sm text-gold/60';
-        }
-
-        function previewImage(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    const img = document.getElementById('pfp-preview');
-                    img.src = e.target.result;
-                    img.classList.remove('hidden');
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function handleAuth() {
-            const user = document.getElementById('auth-user').value;
-            const pass = document.getElementById('auth-pass').value;
-            if(!user || !pass) return;
-
-            if(authMode === 'signup') {
-                const userData = { name: user, pass: pass, pfp: document.getElementById('pfp-preview').src || `https://ui-avatars.com/api/?name=${user}&background=C5A059&color=fff` };
-                localStorage.setItem(`rekaz_user_${user}`, JSON.stringify(userData));
-                toggleAuthMode('login');
-            } else {
-                const stored = localStorage.getItem(`rekaz_user_${user}`);
-                if(stored) {
-                    const parsed = JSON.parse(stored);
-                    if(parsed.pass === pass) { currentUser = parsed; loginToApp(); }
-                    else alert("خطأ في كلمة المرور");
-                } else alert("المستخدم غير موجود");
-            }
-        }
-
-        function loginToApp() {
-            document.getElementById('user-name-display').innerText = currentUser.name;
-            document.getElementById('user-avatar').src = currentUser.pfp;
-            document.getElementById('auth-gate').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('auth-gate').style.display = 'none';
-                document.getElementById('main-app').classList.remove('hidden');
-                setTimeout(() => { 
-                    document.getElementById('main-app').style.opacity = '1'; 
-                    loadPosts(); 
-                    unlockMedal(1);
-                    updateBookContent('fiqh');
-                }, 100);
-            }, 500);
-            initGemini();
-        }
-
-        function createPost() {
-            const text = document.getElementById('post-input').value;
-            if(!text) return;
-            const posts = JSON.parse(localStorage.getItem('rekaz_posts') || '[]');
-            posts.unshift({ author: currentUser.name, avatar: currentUser.pfp, content: text, time: "منذ لحظات" });
-            localStorage.setItem('rekaz_posts', JSON.stringify(posts));
-            document.getElementById('post-input').value = "";
-            loadPosts();
-            unlockMedal(2);
-        }
-
-        function loadPosts() {
-            const container = document.getElementById('posts-container');
-            const posts = JSON.parse(localStorage.getItem('rekaz_posts') || '[]');
-            container.innerHTML = posts.map(p => `
-                <div class="glass-panel p-6 rounded-3xl post-card animate-in slide-in-from-bottom-4 duration-500 shadow-sm border-none">
-                    <div class="flex items-center gap-3 mb-4">
-                        <img src="${p.avatar}" class="w-10 h-10 rounded-xl object-cover border border-gold/10">
-                        <div><h5 class="font-bold text-gray-700 text-xs">${p.author}</h5><p class="text-[9px] text-gray-400">${p.time}</p></div>
-                    </div>
-                    <p class="text-xs text-gray-600 leading-relaxed font-bold">${p.content}</p>
-                </div>
-            `).join('');
-        }
-
-        function unlockMedal(id) {
-            const medal = document.getElementById('medal-' + id);
-            if(medal) medal.classList.add('unlocked');
-        }
-
-        function openProfileEdit() {
-            document.getElementById('profile-modal').style.display = 'flex';
-            document.getElementById('edit-pfp-preview').src = currentUser.pfp;
-            document.getElementById('edit-name-input').value = currentUser.name;
-        }
-
-        function closeProfileEdit() { document.getElementById('profile-modal').style.display = 'none'; }
-
-        function updateProfilePFP(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = e => document.getElementById('edit-pfp-preview').src = e.target.result;
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function saveProfileChanges() {
-            currentUser.name = document.getElementById('edit-name-input').value;
-            currentUser.pfp = document.getElementById('edit-pfp-preview').src;
-            localStorage.setItem(`rekaz_user_${currentUser.name}`, JSON.stringify(currentUser));
-            document.getElementById('user-name-display').innerText = currentUser.name;
-            document.getElementById('user-avatar').src = currentUser.pfp;
-            closeProfileEdit();
-            loadPosts();
-        }
-
-        function toggleGemini() { 
-            const chat = document.getElementById('gemini-chat-window');
-            chat.classList.toggle('active');
-            if(chat.classList.contains('active')) unlockMedal(3);
-        }
-
-        function initGemini() {
-            document.getElementById('chat-content').innerHTML = `<div class="bg-blue-50 p-4 rounded-2xl mb-2 text-blue-600 border border-blue-100">مرحباً ${currentUser.name}، أنا Gemini المساعد الذكي لرِكاز.</div>`;
-        }
-
-        function sendToGemini() {
-            const input = document.getElementById('gemini-input');
-            const val = input.value.trim();
-            if(!val) return;
-            const content = document.getElementById('chat-content');
-            
-            content.innerHTML += `<div class="text-left py-2 px-4 bg-gray-100 rounded-xl mb-4 ml-8 text-[10px] font-black">${val}</div>`;
-            input.value = "";
-            content.scrollTop = content.scrollHeight;
-
-            setTimeout(() => {
-                let response = geminiLogic(val);
-                content.innerHTML += `<div class="bg-gradient-to-r from-blue-50 to-white p-4 rounded-2xl mb-4 mr-8 border-r-4 border-blue-400 text-gray-700 shadow-sm">${response}</div>`;
-                content.scrollTop = content.scrollHeight;
-            }, 800);
-        }
-
-        function logoutMaki() { location.reload(); }
-
-        window.addEventListener('load', () => {
-            const bar = document.getElementById('progress-bar');
-            const loadingText = document.getElementById('loading-text');
-            
-            setTimeout(() => { bar.style.width = '30%'; loadingText.innerText = 'يتم تحليل الرموز الملكية...'; }, 500);
-            setTimeout(() => { bar.style.width = '70%'; loadingText.innerText = 'بناء الجوهر المعرفي...'; }, 1200);
-            setTimeout(() => { bar.style.width = '100%'; loadingText.innerText = 'اكتملت العظمة!'; }, 2000);
-
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                splash.style.opacity = '0';
-                setTimeout(() => splash.style.display = 'none', 1000);
-            }, 2500);
+        // 5. التعامل مع بيانات السيرفر (Socket Events)
+        socket.on('connect', () => {
+            document.getElementById('status').innerText = "متصل أونلاين";
         });
+
+        socket.on('currentPlayers', (players) => {
+            Object.keys(players).forEach((id) => {
+                if (id !== socket.id) {
+                    addOtherPlayer(id, players[id]);
+                }
+            });
+        });
+
+        socket.on('newPlayer', (data) => {
+            addOtherPlayer(data.id, data.data);
+        });
+
+        socket.on('playerMoved', (data) => {
+            if (otherPlayers[data.id]) {
+                otherPlayers[data.id].position.set(data.data.x, 0, data.data.z);
+                otherPlayers[data.id].rotation.y = data.data.rotation;
+            }
+        });
+
+        socket.on('playerDisconnected', (id) => {
+            scene.remove(otherPlayers[id]);
+            delete otherPlayers[id];
+        });
+
+        function addOtherPlayer(id, data) {
+            const color = data.role === 'police' ? 0x0000ff : 0xff0000;
+            otherPlayers[id] = createCar(color);
+            scene.add(otherPlayers[id]);
+        }
+
+        // 6. حلقة التحديث والرسم (Game Loop)
+        function update() {
+            // منطق الحركة
+            if (keys['ArrowUp']) speed = Math.min(speed + acceleration, maxSpeed);
+            else if (keys['ArrowDown']) speed = Math.max(speed - acceleration, -maxSpeed/2);
+            else {
+                if (speed > 0) speed -= friction;
+                if (speed < 0) speed += friction;
+            }
+
+            if (keys['ArrowLeft']) myCar.rotation.y += 0.04;
+            if (keys['ArrowRight']) myCar.rotation.y -= 0.04;
+
+            myCar.translateZ(-speed);
+
+            // إرسال التحديث للسيرفر
+            socket.emit('playerMovement', {
+                x: myCar.position.x,
+                z: myCar.position.z,
+                rotation: myCar.rotation.y
+            });
+
+            // جعل الكاميرا تتبع السيارة
+            const relativeCameraOffset = new THREE.Vector3(0, 3, 7);
+            const cameraOffset = relativeCameraOffset.applyMatrix4(myCar.matrixWorld);
+            camera.position.lerp(cameraOffset, 0.1);
+            camera.lookAt(myCar.position);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            update();
+            renderer.render(scene, camera);
+        }
+
+        // التعامل مع تغيير حجم النافذة
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
     </script>
 </body>
 </html>
