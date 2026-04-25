@@ -1,351 +1,151 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Street Wars RP: City Life</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ab Maki Puzzles - مواجهة الألغاز</title>
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Segoe UI', sans-serif; touch-action: none; color: white; }
+        :root { --primary: #00f2ff; --danger: #ff3e3e; --bg: #050505; }
+        body { margin: 0; background: var(--bg); color: white; font-family: 'Segoe UI', Tahoma, sans-serif; overflow: hidden; }
         
-        /* شاشة تسجيل الدخول */
-        #auth-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #111, #000); z-index: 150;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .login-box {
-            background: rgba(255, 255, 255, 0.03); padding: 30px; border-radius: 24px;
-            backdrop-filter: blur(20px); border: 1px solid rgba(0, 242, 255, 0.3);
-            width: 340px; text-align: center; box-shadow: 0 0 30px rgba(0,0,0,0.5);
-        }
-        input {
-            width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #333; 
-            background: rgba(0,0,0,0.5); color: white; box-sizing: border-box; outline: none;
-        }
-        .side-select { display: flex; gap: 10px; margin: 15px 0; }
-        .side-btn { 
-            flex: 1; padding: 12px; border-radius: 10px; cursor: pointer; border: 2px solid transparent;
-            background: #1a1a1a; transition: 0.3s; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 8px;
-        }
-        .side-btn.active-p { border-color: #0044ff; box-shadow: 0 0 15px #0044ff; background: #001144; }
-        .side-btn.active-t { border-color: #ff0000; box-shadow: 0 0 15px #ff0000; background: #440000; }
+        /* تقسيم الشاشة */
+        .game-grid { display: grid; grid-template-rows: 1fr 1fr; height: 100vh; position: relative; }
+        .video-wrapper { position: relative; background: #000; border: 1px solid #1a1a1a; overflow: hidden; }
+        video { width: 100%; height: 100%; object-fit: cover; }
+        .mirror { transform: scaleX(-1); }
 
-        .start-btn {
-            background: linear-gradient(90deg, #00f2ff, #0072ff); color: white; border: none; 
-            padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; font-size: 16px;
+        /* صندوق الألغاز العائم */
+        .puzzle-overlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 90%; max-width: 400px; background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(15px); border: 2px solid var(--primary);
+            border-radius: 25px; padding: 25px; text-align: center; z-index: 100;
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.2);
         }
 
-        /* شاشة التحميل */
-        #loading-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #050505; z-index: 200; display: none; flex-direction: column;
-            align-items: center; justify-content: center;
-        }
-        .loading-content { text-align: center; width: 80%; max-width: 400px; }
-        #load-tip { font-style: italic; color: #888; margin-bottom: 20px; font-size: 14px; }
-        .loader-icon { font-size: 40px; color: #00f2ff; animation: spin 1s linear infinite; margin-bottom: 20px; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        .progress-container { width: 100%; height: 6px; background: #222; border-radius: 10px; overflow: hidden; }
-        .progress-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #00f2ff, #0072ff); box-shadow: 0 0 10px #00f2ff; }
-
-        /* نظام الإشعارات */
-        #notifications {
-            position: fixed; top: 20px; right: 20px; z-index: 300;
-            display: flex; flex-direction: column; gap: 10px; pointer-events: none;
-        }
-        .notif {
-            background: rgba(0, 0, 0, 0.8); border-right: 4px solid #00f2ff;
-            padding: 10px 20px; border-radius: 5px; font-size: 13px;
-            animation: slideIn 0.5s ease forwards;
-        }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-        /* HUD */
-        #ui-hud { position: absolute; top: 20px; left: 20px; pointer-events: none; z-index: 10; }
-        .hud-card {
-            background: rgba(0,0,0,0.6); padding: 8px 12px; border-radius: 8px;
-            border-left: 4px solid #00f2ff; margin-bottom: 8px; font-size: 13px; display: flex; align-items: center; gap: 10px;
-        }
+        .puzzle-text { font-size: 1.4rem; font-weight: bold; margin: 15px 0; min-height: 60px; color: #fff; }
         
-        .mobile-btn {
-            position: absolute; background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 50%;
-            width: 70px; height: 70px; display: flex; align-items: center;
-            justify-content: center; color: white; z-index: 20; backdrop-filter: blur(8px);
-            font-size: 24px;
+        /* الأزرار */
+        .btn {
+            background: linear-gradient(90deg, #00f2ff, #0072ff);
+            border: none; padding: 12px 25px; border-radius: 12px;
+            color: white; font-weight: bold; cursor: pointer;
+            transition: 0.3s; width: 100%; font-size: 1rem;
         }
-        #btn-up { bottom: 120px; right: 40px; }
-        #btn-down { bottom: 30px; right: 40px; }
-        #btn-left { bottom: 30px; left: 30px; }
-        #btn-right { bottom: 30px; left: 120px; }
-        #btn-fire { bottom: 120px; left: 75px; background: rgba(255, 0, 0, 0.3); border: 2px solid #ff0000; width: 60px; height: 60px; display: none; }
-        #btn-action { top: 20px; right: 20px; width: auto; height: 50px; padding: 0 20px; border-radius: 12px; background: #c0392b; font-size: 14px; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+        .btn:active { transform: scale(0.95); }
 
-        #speedometer { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); text-align: center; }
+        .timer-bar { height: 5px; background: var(--danger); width: 100%; margin-top: 15px; border-radius: 10px; transition: width 1s linear; }
+
+        /* معلومات اللاعبين */
+        .player-tag {
+            position: absolute; bottom: 15px; right: 15px;
+            background: rgba(0,0,0,0.6); padding: 5px 12px;
+            border-radius: 8px; font-size: 12px; border: 1px solid var(--primary);
+        }
+        .room-id { position: fixed; top: 10px; left: 10px; font-size: 10px; color: #555; z-index: 200; }
     </style>
 </head>
 <body>
 
-    <div id="notifications"></div>
+    <div class="room-id">Server: Connected</div>
 
-    <div id="auth-screen">
-        <div class="login-box">
-            <h2 style="color:#00f2ff">STREET WARS RP</h2>
-            <input type="text" id="username" placeholder="اسم الشخصية...">
-            <div class="side-select">
-                <div class="side-btn" id="side-p" onclick="setRole('police')"><i class="fas fa-shield-halved"></i> شرطة</div>
-                <div class="side-btn" id="side-t" onclick="setRole('thief')"><i class="fas fa-mask"></i> حرامي</div>
+    <div class="game-grid">
+        <div class="video-wrapper">
+            <video id="remote-video" autoplay></video>
+            <div class="player-tag"><i class="fas fa-user-secret"></i> الخصم</div>
+        </div>
+
+        <div class="puzzle-overlay">
+            <div id="setup-ui">
+                <h2 style="color: var(--primary)">تحدي الوجوه</h2>
+                <p>انتظر حتى تفتح الكاميرا، ثم اضغط ابدأ</p>
+                <button class="btn" onclick="requestNextPuzzle()">بدء التحدي <i class="fas fa-play"></i></button>
             </div>
-            <input type="text" id="room-code" placeholder="كود الغرفة...">
-            <input type="color" id="char-color" value="#00f2ff">
-            <button class="start-btn" onclick="initGame()">دخول السيرفر <i class="fas fa-arrow-right-to-bracket"></i></button>
+
+            <div id="game-ui" style="display: none;">
+                <div class="puzzle-text" id="puzzle-display">ما هو الشيء الذي يكتب ولا يقرأ؟</div>
+                <div class="timer-bar" id="timer-line"></div>
+                <button class="btn" style="margin-top:20px" onclick="requestNextPuzzle()">اللغز التالي <i class="fas fa-forward"></i></button>
+            </div>
+        </div>
+
+        <div class="video-wrapper">
+            <video id="local-video" class="mirror" autoplay muted></video>
+            <div class="player-tag"><i class="fas fa-user"></i> أنت (Ab Maki)</div>
         </div>
     </div>
-
-    <div id="loading-screen">
-        <div class="loading-content">
-            <i class="fas fa-spinner loader-icon"></i>
-            <h2 id="load-percent">0%</h2>
-            <div id="load-tip">جاري تحميل خريطة المدينة والشوارع...</div>
-            <div class="progress-container"><div class="progress-fill" id="load-fill"></div></div>
-        </div>
-    </div>
-
-    <div id="ui-hud">
-        <div class="hud-card"><i class="fas fa-user" style="color:#00f2ff"></i> <span id="hud-user">Guest</span></div>
-        <div class="hud-card"><i class="fas fa-gun" style="color:#ff0000"></i> <span id="hud-ammo">بندقية M4</span></div>
-    </div>
-
-    <div id="speedometer">
-        <span style="font-size: 40px; font-weight: bold;" id="speed-num">0</span><br>
-        <span style="font-size: 12px; color: #00f2ff;">KM/H</span>
-    </div>
-
-    <div class="mobile-btn" id="btn-up"><i class="fas fa-chevron-up"></i></div>
-    <div class="mobile-btn" id="btn-down"><i class="fas fa-chevron-down"></i></div>
-    <div class="mobile-btn" id="btn-left"><i class="fas fa-chevron-left"></i></div>
-    <div class="mobile-btn" id="btn-right"><i class="fas fa-chevron-right"></i></div>
-    <div class="mobile-btn" id="btn-fire"><i class="fas fa-crosshairs"></i></div>
-    
-    <div class="mobile-btn" id="btn-action">
-        <i class="fas fa-car-side" id="action-icon"></i> <span id="action-text">خروج</span>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <script>
-        let gameActive = false;
-        let isDriving = true;
-        let role = 'thief';
+        // الربط مع السيرفر (لو شغال محلي استخدم localhost:3000)
+        const socket = io('http://localhost:3000'); 
+        const myPeer = new Peer();
         
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x020205);
-        scene.fog = new THREE.Fog(0x020205, 10, 150);
+        const localVideo = document.getElementById('local-video');
+        const remoteVideo = document.getElementById('remote-video');
+        const ROOM_ID = "maki_pro_room"; // اسم الغرفة الموحد
 
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        document.body.appendChild(renderer.domElement);
+        let myStream;
 
-        const light = new THREE.AmbientLight(0xffffff, 0.3);
-        scene.add(light);
-        const directional = new THREE.DirectionalLight(0x00f2ff, 0.8);
-        directional.position.set(50, 100, 50);
-        scene.add(directional);
+        // 1. تشغيل كاميرتك
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(stream => {
+            myStream = stream;
+            localVideo.srcObject = stream;
 
-        // --- بناء المدينة والشوارع ---
-        function createCity() {
-            // الأرضية (أسفلت)
-            const groundGeo = new THREE.PlaneGeometry(2000, 2000);
-            const groundMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
-            const ground = new THREE.Mesh(groundGeo, groundMat);
-            ground.rotation.x = -Math.PI / 2;
-            scene.add(ground);
+            // استقبال اتصال من صديق
+            myPeer.on('call', call => {
+                call.answer(stream);
+                call.on('stream', userStream => {
+                    remoteVideo.srcObject = userStream;
+                });
+            });
 
-            // إضافة خطوط الشارع
-            const grid = new THREE.GridHelper(2000, 40, 0x333333, 0x222222);
-            scene.add(grid);
-
-            // إضافة مباني بسيطة حول المركز
-            for(let i=0; i<40; i++) {
-                const h = Math.random() * 20 + 5;
-                const bGeo = new THREE.BoxGeometry(10, h, 10);
-                const bMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a });
-                const b = new THREE.Mesh(bGeo, bMat);
-                b.position.set(Math.random()*400-200, h/2, Math.random()*400-200);
-                // ابعاد المباني عن منطقة البداية
-                if (b.position.length() > 30) scene.add(b);
-            }
-        }
-        createCity();
-
-        // موديل السيارة
-        function createProCar(color = null) {
-            const car = new THREE.Group();
-            const carColor = color || (role === 'police' ? 0x0011ff : 0xcc0000);
-            const bodyMat = new THREE.MeshStandardMaterial({ color: carColor, metalness: 0.8, roughness: 0.2 });
-            const body = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.6, 3.2), bodyMat);
-            body.position.y = 0.5;
-            car.add(body);
-            const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.5, 1.6), new THREE.MeshStandardMaterial({color: 0x050505}));
-            cabin.position.set(0, 1, 0.2);
-            car.add(cabin);
-            return car;
-        }
-
-        // موديل الشخصية
-        function createCharacter(color = 0x00f2ff) {
-            const p = new THREE.Group();
-            const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.3, 1, 4, 8), new THREE.MeshStandardMaterial({color: color}));
-            body.position.y = 0.8;
-            p.add(body);
-            const gun = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.15, 0.8), new THREE.MeshStandardMaterial({color: 0x000000}));
-            gun.position.set(0.4, 1, 0.3);
-            p.add(gun);
-            return p;
-        }
-
-        let myCar = createProCar();
-        let myChar = createCharacter();
-        myChar.visible = false;
-        scene.add(myCar, myChar);
-
-        // إضافة بوتات (شخصيات وسيارات أخرى)
-        function spawnWorldNPCs() {
-            for(let i=0; i<10; i++) {
-                const npcCar = createProCar(Math.random() * 0xffffff);
-                npcCar.position.set(Math.random()*100-50, 0, Math.random()*100-50);
-                if(npcCar.position.length() > 10) scene.add(npcCar);
-
-                const npcChar = createCharacter(Math.random() * 0xffffff);
-                npcChar.position.set(Math.random()*100-50, 0, Math.random()*100-50);
-                if(npcChar.position.length() > 10) scene.add(npcChar);
-            }
-        }
-
-        function notify(text) {
-            const container = document.getElementById('notifications');
-            const div = document.createElement('div');
-            div.className = 'notif';
-            div.innerHTML = `<i class="fas fa-info-circle"></i> ${text}`;
-            container.appendChild(div);
-            setTimeout(() => div.remove(), 4000);
-        }
-
-        function setRole(r) {
-            role = r;
-            document.getElementById('side-p').className = 'side-btn' + (r === 'police' ? ' active-p' : '');
-            document.getElementById('side-t').className = 'side-btn' + (r === 'thief' ? ' active-t' : '');
-        }
-
-        function initGame() {
-            const user = document.getElementById('username').value || "لاعب مجهول";
-            document.getElementById('auth-screen').style.display = 'none';
-            document.getElementById('loading-screen').style.display = 'flex';
-            
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.random() * 10;
-                if(progress > 100) progress = 100;
-                document.getElementById('load-fill').style.width = progress + '%';
-                document.getElementById('load-percent').innerText = Math.floor(progress) + '%';
-
-                if(progress >= 100) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        document.getElementById('loading-screen').style.display = 'none';
-                        gameActive = true;
-                        myCar.children[0].material.color.set(role === 'police' ? 0x0011ff : 0xcc0000);
-                        document.getElementById('hud-user').innerText = user;
-                        spawnWorldNPCs();
-                        notify(`انضم ${user} إلى الغرفة`);
-                        // محاكاة دخول أشخاص آخرين بعد فترة
-                        setTimeout(() => notify("انضم Ahmed_Hero إلى الغرفة"), 3000);
-                    }, 500);
-                }
-            }, 100);
-        }
-
-        const keys = { up: false, down: false, left: false, right: false };
-        const bind = (id, k) => {
-            const el = document.getElementById(id);
-            el.addEventListener('touchstart', (e) => { e.preventDefault(); keys[k] = true; });
-            el.addEventListener('touchend', () => keys[k] = false);
-        };
-        bind('btn-up', 'up'); bind('btn-down', 'down'); bind('btn-left', 'left'); bind('btn-right', 'right');
-
-        document.getElementById('btn-fire').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            const flash = new THREE.PointLight(0xffff00, 3, 10);
-            flash.position.copy(myChar.position).y += 1.2;
-            scene.add(flash);
-            setTimeout(() => scene.remove(flash), 50);
+            // عندما يتصل مستخدم جديد بالسيرفر
+            socket.on('user-connected', userId => {
+                const call = myPeer.call(userId, stream);
+                call.on('stream', userStream => {
+                    remoteVideo.srcObject = userStream;
+                });
+            });
         });
 
-        document.getElementById('btn-action').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            isDriving = !isDriving;
-            const icon = document.getElementById('action-icon');
-            const text = document.getElementById('action-text');
-            const btn = document.getElementById('btn-action');
-            const fireBtn = document.getElementById('btn-fire');
-
-            if(isDriving) {
-                myChar.visible = false;
-                myCar.position.copy(myChar.position);
-                text.innerText = "خروج";
-                icon.className = "fas fa-car-side";
-                btn.style.background = "#c0392b";
-                fireBtn.style.display = "none";
-            } else {
-                myChar.position.copy(myCar.position);
-                myChar.position.x += 2;
-                myChar.visible = true;
-                text.innerText = "ركوب";
-                icon.className = "fas fa-walking";
-                btn.style.background = "#27ae60";
-                fireBtn.style.display = "flex";
-            }
+        myPeer.on('open', id => {
+            socket.emit('join-room', ROOM_ID, id);
         });
 
-        let speed = 0;
-        function animate() {
-            requestAnimationFrame(animate);
-            if(!gameActive) return;
+        // 2. إدارة الألغاز
+        const puzzles = [
+            "شيء يملك أسنان كثيرة لكنه لا يعض؟",
+            "له عين واحدة ولكنه لا يرى؟",
+            "يسمع بلا أذن ويتكلم بلا لسان؟",
+            "حاجة كل ما تذبحها تعيط أنت عليها؟",
+            "يمشي وراك طول النهار ويختفي بالليل؟"
+        ];
 
-            const target = isDriving ? myCar : myChar;
-
-            if(isDriving) {
-                if (keys.up) speed = THREE.MathUtils.lerp(speed, 1.2, 0.05);
-                else if (keys.down) speed = THREE.MathUtils.lerp(speed, -0.4, 0.05);
-                else speed = THREE.MathUtils.lerp(speed, 0, 0.02);
-
-                if (keys.left) myCar.rotation.y += 0.04 * (speed + 0.1);
-                if (keys.right) myCar.rotation.y -= 0.04 * (speed + 0.1);
-                myCar.translateZ(-speed);
-                document.getElementById('speed-num').innerText = Math.round(Math.abs(speed * 180));
-            } else {
-                if (keys.up) myChar.translateZ(0.18);
-                if (keys.down) myChar.translateZ(-0.1);
-                if (keys.left) myChar.rotation.y += 0.06;
-                if (keys.right) myChar.rotation.y -= 0.06;
-                document.getElementById('speed-num').innerText = "0";
-            }
-
-            const offset = new THREE.Vector3(0, 5, 12).applyMatrix4(target.matrixWorld);
-            camera.position.lerp(offset, 0.1);
-            camera.lookAt(target.position);
-            renderer.render(scene, camera);
+        function requestNextPuzzle() {
+            const p = puzzles[Math.floor(Math.random() * puzzles.length)];
+            socket.emit('send-puzzle', p);
         }
-        animate();
 
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+        socket.on('new-puzzle', puzzle => {
+            document.getElementById('setup-ui').style.display = 'none';
+            document.getElementById('game-ui').style.display = 'block';
+            document.getElementById('puzzle-display').innerText = puzzle;
+            resetTimer();
         });
+
+        function resetTimer() {
+            const line = document.getElementById('timer-line');
+            line.style.transition = 'none';
+            line.style.width = '100%';
+            setTimeout(() => {
+                line.style.transition = 'width 20s linear';
+                line.style.width = '0%';
+            }, 50);
+        }
     </script>
 </body>
 </html>
