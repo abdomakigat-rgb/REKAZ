@@ -2,174 +2,123 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ab Maki Puzzles - Face Duel</title>
-    
-    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
-    <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ab Maki - Live Studio Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
-        :root { --primary: #00f2ff; --accent: #ff0055; --bg: #050505; }
-        
-        body { 
-            margin: 0; background: var(--bg); color: white; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            overflow: hidden; height: 100vh;
+        @keyframes marquee {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
-
-        /* تقسيم الشاشة لنصفين متساويين للكاميرات */
-        .game-container {
-            display: flex; flex-direction: column; height: 100vh; width: 100%;
-        }
-
-        .video-box {
-            flex: 1; position: relative; background: #000;
-            border: 1px solid #111; overflow: hidden;
-        }
-
-        video {
-            width: 100%; height: 100%; object-fit: cover;
-            transform: scaleX(-1); /* جعل الكاميرا كالمرآة */
-        }
-
-        /* صندوق الألغاز في منتصف الشاشة */
-        .puzzle-card {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 85%; max-width: 380px; background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(15px); border: 2px solid var(--primary);
-            border-radius: 20px; padding: 20px; text-align: center;
-            z-index: 100; box-shadow: 0 0 40px rgba(0, 242, 255, 0.3);
-        }
-
-        .puzzle-text {
-            font-size: 1.3rem; font-weight: bold; margin: 15px 0;
-            min-height: 50px; line-height: 1.5; color: #fff;
-        }
-
-        .btn-action {
-            background: linear-gradient(45deg, #00f2ff, #0072ff);
-            border: none; padding: 12px 25px; border-radius: 12px;
-            color: white; font-weight: bold; cursor: pointer;
-            width: 100%; font-size: 1rem; transition: 0.3s;
-        }
-
-        .btn-action:active { transform: scale(0.95); }
-
-        /* شريط الوقت */
-        .timer-container {
-            width: 100%; height: 6px; background: #222; 
-            border-radius: 10px; margin-top: 15px; overflow: hidden;
-        }
-        .timer-fill {
-            width: 100%; height: 100%; background: var(--accent);
-            transition: width 1s linear;
-        }
-
-        .status-tag {
-            position: absolute; top: 10px; right: 10px;
-            background: rgba(0,0,0,0.7); padding: 5px 12px;
-            border-radius: 20px; font-size: 11px; border: 1px solid var(--primary);
-        }
+        .animate-marquee { display: inline-block; animation: marquee 15s linear infinite; }
+        .glass { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
-<body>
+<body class="bg-[#0a0a0a] text-white font-sans overflow-hidden">
 
-    <div class="game-container">
-        <div class="video-box">
-            <video id="remote-video" autoplay playsinline></video>
-            <div class="status-tag"><i class="fas fa-video"></i> الخصم أونلاين</div>
+    <div class="relative w-full h-[85vh] bg-black group">
+        <video id="main-stream" autoplay playsinline class="w-full h-full object-contain"></video>
+
+        <div class="absolute top-8 left-8 bg-red-600 px-5 py-3 rounded-2xl shadow-2xl border-2 border-white/20 flex items-center gap-3 animate-bounce shadow-red-500/20">
+            <i class="fas fa-bell text-xl"></i>
+            <span class="font-black text-lg">اشترك يا مكي! 🔥</span>
         </div>
 
-        <div class="video-box">
-            <video id="local-video" autoplay playsinline muted></video>
-            <div class="status-tag" style="top: auto; bottom: 10px;"><i class="fas fa-user"></i> أنت (Ab Maki)</div>
+        <div class="absolute bottom-0 w-full glass py-3 overflow-hidden">
+            <div class="animate-marquee whitespace-nowrap text-xl font-bold text-cyan-400">
+                🔥 بث مباشر من استوديو Ab Maki - أهلاً بكل المشاهدين - لا تنسوا اللايك والاشتراك لتفعيل ميزة التحديات الجديدة 🔥
+            </div>
+        </div>
+
+        <div class="absolute right-0 top-0 w-80 h-full glass p-4 transition-transform duration-500" id="chat-box">
+            <div class="flex items-center justify-between mb-4 border-b border-white/10 pb-2">
+                <span class="font-bold text-cyan-400"><i class="fas fa-comments"></i> الدردشة المباشرة</span>
+                <span class="text-xs text-gray-400">1.2K مشاهدة</span>
+            </div>
+            <div id="messages-container" class="space-y-4 h-[70vh] overflow-y-auto pr-2">
+                </div>
         </div>
     </div>
 
-    <div class="puzzle-card">
-        <div id="start-screen">
-            <h2 style="color: var(--primary); margin-top: 0;">تحدي الوجوه</h2>
-            <p style="font-size: 14px; color: #aaa;">وري صاحبك وشك وحل الألغاز أسرع منه!</p>
-            <button class="btn-action" onclick="sendNextPuzzle()">ابدأ التحدي <i class="fas fa-play"></i></button>
+    <div class="h-[15vh] bg-[#111] border-t border-white/5 flex items-center justify-between px-12">
+        <div class="flex gap-4">
+            <button onclick="startScreenShare()" class="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded-xl font-bold transition-all flex items-center gap-2">
+                <i class="fas fa-desktop"></i> مشاركة الشاشة
+            </button>
+            <button onclick="startCamera()" class="bg-zinc-800 hover:bg-zinc-700 px-8 py-3 rounded-xl font-bold transition-all flex items-center gap-2">
+                <i class="fas fa-camera"></i> الكاميرا
+            </button>
         </div>
 
-        <div id="game-screen" style="display: none;">
-            <div class="puzzle-text" id="puzzle-content">جاري تحميل اللغز...</div>
-            <div class="timer-container"><div class="timer-fill" id="timer-bar"></div></div>
-            <button class="btn-action" style="margin-top: 20px;" onclick="sendNextPuzzle()">اللغز التالي <i class="fas fa-forward"></i></button>
+        <div class="flex items-center gap-6">
+            <div class="text-center">
+                <p class="text-xs text-gray-500 uppercase tracking-widest">حالة البث</p>
+                <p class="text-green-500 font-bold" id="status">مستعد للبدء</p>
+            </div>
+            <button id="live-btn" onclick="toggleLive()" class="bg-red-600 hover:bg-red-700 px-12 py-4 rounded-2xl font-black text-lg shadow-lg shadow-red-600/20 transition-all">
+                بث مباشر الآن
+            </button>
         </div>
     </div>
 
     <script>
-        // تغيير الرابط لرابط السيرفر الخاص بك عند الرفع أونلاين
-        const socket = io('http://localhost:3000'); 
-        const peer = new Peer();
-        const localVideo = document.getElementById('local-video');
-        const remoteVideo = document.getElementById('remote-video');
-        const timerBar = document.getElementById('timer-bar');
+        const videoElement = document.getElementById('main-stream');
+        const messagesContainer = document.getElementById('messages-container');
+        let isLive = false;
 
-        const ROOM_ID = "maki_duel_room"; // كود الغرفة الموحد
-        let myStream;
-
-        // قائمة الألغاز
-        const puzzles = [
-            "شيء يملك أسنان كثيرة لكنه لا يعض؟ (المشط)",
-            "له عين واحدة ولكنه لا يرى؟ (الإبرة)",
-            "حاجة بتسمع بلا أذن وتتكلم بلا لسان؟ (التليفون)",
-            "ترميه كلما احتجت إليه؟ (شبكة الصيد)",
-            "شيء يكتب ولا يقرأ؟ (القلم)",
-            "يمشي وراك طول النهار ويختفي بالليل؟ (الضل)",
-            "حاجة كل ما تذبحها تعيط أنت عليها؟ (البصلة)",
-            "كلما زاد نقص؟ (العمر)",
-            "له وجهاً بلا عينين ويدين بلا أصابع؟ (الساعة)",
-            "حاجة بتعدي من القزاز بس مش بتكسره؟ (الضوء)"
-        ];
-
-        // 1. تشغيل الكاميرا والميكروفون
-        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-        .then(stream => {
-            myStream = stream;
-            localVideo.srcObject = stream;
-
-            peer.on('call', call => {
-                call.answer(stream);
-                call.on('stream', userStream => {
-                    remoteVideo.srcObject = userStream;
-                });
-            });
-
-            socket.on('user-connected', userId => {
-                const call = peer.call(userId, stream);
-                call.on('stream', userStream => {
-                    remoteVideo.srcObject = userStream;
-                });
-            });
-        });
-
-        peer.on('open', id => {
-            socket.emit('join-room', ROOM_ID, id);
-        });
-
-        // 2. إدارة الألغاز أونلاين
-        function sendNextPuzzle() {
-            const randomPuzzle = puzzles[Math.floor(Math.random() * puzzles.length)];
-            socket.emit('send-puzzle', randomPuzzle);
+        // 1. تشغيل الكاميرا
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                videoElement.srcObject = stream;
+            } catch (err) { console.error("Error: ", err); }
         }
 
-        socket.on('new-puzzle', puzzle => {
-            document.getElementById('start-screen').style.display = 'none';
-            document.getElementById('game-screen').style.display = 'block';
-            document.getElementById('puzzle-content').innerText = puzzle;
+        // 2. تشغيل مشاركة الشاشة
+        async function startScreenShare() {
+            try {
+                const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+                videoElement.srcObject = stream;
+            } catch (err) { console.error("Error: ", err); }
+        }
+
+        // 3. محاكاة التعليقات الحقيقية (بإمكانك ربطها بـ YouTube API لاحقاً)
+        const fakeUsers = ["محمد علي", "سارة مكي", "ياسين", "بودا", "أحمد خالد"];
+        const fakeTexts = ["منور يا مكي!", "أفضل مطور في الأقصر والله", "استمر يا وحش 🚀", "كيف عملت هذا الموقع؟", "ممكن ألعب معاك؟"];
+
+        function addComment() {
+            const user = fakeUsers[Math.floor(Math.random() * fakeUsers.length)];
+            const text = fakeTexts[Math.floor(Math.random() * fakeTexts.length)];
             
-            // إعادة ضبط التايمر (20 ثانية)
-            timerBar.style.transition = 'none';
-            timerBar.style.width = '100%';
-            setTimeout(() => {
-                timerBar.style.transition = 'width 20s linear';
-                timerBar.style.width = '0%';
-            }, 50);
-        });
+            const commentHTML = `
+                <div class="bg-white/5 p-3 rounded-xl border-r-4 border-cyan-500 animate-fade-in">
+                    <p class="text-xs font-bold text-cyan-400">${user}</p>
+                    <p class="text-sm text-gray-200">${text}</p>
+                </div>
+            `;
+            messagesContainer.insertAdjacentHTML('afterbegin', commentHTML);
+        }
+
+        setInterval(addComment, 3000); // إضافة تعليق كل 3 ثواني
+
+        // 4. تفعيل البث
+        function toggleLive() {
+            isLive = !isLive;
+            const btn = document.getElementById('live-btn');
+            const status = document.getElementById('status');
+            
+            if (isLive) {
+                btn.innerText = "إنهاء البث";
+                btn.classList.replace('bg-red-600', 'bg-zinc-700');
+                status.innerText = "LIVE NOW";
+                status.classList.replace('text-green-500', 'text-red-500');
+                alert("البث الآن يظهر للجمهور مع الملصقات والتعليقات!");
+            } else {
+                location.reload();
+            }
+        }
     </script>
 </body>
 </html>
