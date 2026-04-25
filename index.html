@@ -96,12 +96,16 @@
         .book-content p { line-height: 1.8; margin-bottom: 1.2rem; text-align: justify; color: #4A4A4A; font-size: 0.95rem; }
         .book-content ul { list-style: circle; padding-right: 20px; margin-bottom: 1rem; color: #555; }
 
-        /* تجميل التفاعلات */
         .post-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
         .post-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(142, 111, 62, 0.1); }
         .nav-btn.active { color: #C5A059; transform: scale(1.1); }
         .achievement-badge { filter: grayscale(1); transition: all 0.5s ease; }
         .achievement-badge.unlocked { filter: grayscale(0); transform: scale(1.1); border-color: #C5A059; }
+
+        .summary-card { border-right: 4px solid #C5A059; transition: all 0.3s ease; }
+        .summary-card:hover { background: #C5A059; color: white; }
+        .quiz-option { border: 1px solid #C5A05920; transition: all 0.2s; }
+        .quiz-option:hover { background: #C5A05910; border-color: #C5A059; }
     </style>
 </head>
 <body class="antialiased">
@@ -199,38 +203,37 @@
                     <div class="flex items-center justify-between mb-8">
                         <div class="flex items-center gap-4">
                             <i data-lucide="library" class="text-gold w-8 h-8"></i>
-                            <h2 class="text-4xl font-bold brand-name">منهج الفقه المالكي - 2 ثانوي</h2>
+                            <h2 class="text-4xl font-bold brand-name">المكتبة الأزهرية - 2 ثانوي</h2>
                         </div>
-                        <span class="px-4 py-1 bg-gold/10 text-gold rounded-full text-[10px] font-black">المقرر الكامل</span>
+                        <select onchange="updateBookContent(this.value)" class="bg-gold/5 border border-gold/20 rounded-xl px-4 py-2 text-xs font-bold outline-none">
+                            <option value="fiqh">الفقه المالكي</option>
+                            <option value="tawhid">التوحيد (الجوهرة)</option>
+                            <option value="tafsir">التفسير (النسفي)</option>
+                            <option value="nahw">النحو (ابن عقيل)</option>
+                            <option value="sarf">الصرف الميسر</option>
+                            <option value="adab">الأدب والنصوص</option>
+                            <option value="mantiq">المنطق (الملوي)</option>
+                            <option value="mutalaa">المطالعة والإنشاء</option>
+                        </select>
                     </div>
-                    <div class="book-content custom-scrollbar h-[550px] overflow-y-auto px-4">
-                        <h2>كتاب البيوع</h2>
-                        <p><strong>البيع لغة:</strong> مقابلة شيء بشيء. <strong>واصطلاحاً:</strong> عقد معاوضة على غير منافع ولا متعة لذة، ذو مكايسة.</p>
-                        <h3>أركان البيع:</h3>
-                        <ul>
-                            <li>العاقدان (البائع والمشتري).</li>
-                            <li>المعقود عليه (الثمن والمثمن).</li>
-                            <li>الصيغة (الإيجاب والقبول).</li>
-                        </ul>
-
-                        <h2>باب الخيار</h2>
-                        <p>الخيار هو طلب خير الأمرين من إمضاء البيع أو رده. وهو نوعان عند المالكية: خيار تروٍّ (شرط) وخيار نقيصة (عيب).</p>
-
-                        <h2>باب الربا</h2>
-                        <p>الربا محرم قطعاً. والقاعدة في المذهب المالكي: "كل ما يقتات ويدخر يجري فيه الربا"، وينقسم لربا الفضل وربا النساء.</p>
-
-                        <h2>باب السلم</h2>
-                        <p>السلم هو بيع موصوف في الذمة ببدل يعجل قبضه في مجلس العقد. وهو مستثنى من بيع ما ليس عندك للحاجة إليه.</p>
-
-                        <h2>باب القرض</h2>
-                        <p>دفع مال لمن ينتفع به ويرد مثله تبرعاً. ويحرم فيه كل شرط جر نفعاً للمقرض.</p>
-
-                        <h2>أحكام النكاح</h2>
-                        <p>عقد يفيد ملك متعة بآدمي غير محرم ولا مجوسي ولا أمة كتابية. أركانه: الولي، الصداق، المحل، الصيغة.</p>
-
-                        <div class="mt-12 p-8 bg-gold/5 rounded-2xl text-center border border-gold/10">
-                            <p class="text-gold font-bold italic">رِكاز .. فخرُ العلمِ والعملِ</p>
+                    <div id="book-display-area" class="book-content custom-scrollbar h-[550px] overflow-y-auto px-4">
                         </div>
+                </div>
+            </div>
+
+            <div id="section-summaries" class="hidden space-y-8 animate-in fade-in duration-700">
+                <h2 class="text-3xl font-black brand-name border-b-2 border-gold/10 pb-4">موجز العباقرة (التلخيص)</h2>
+                <div class="grid md:grid-cols-2 gap-4" id="summaries-grid">
+                    </div>
+            </div>
+
+            <div id="section-quizzes" class="hidden space-y-8 animate-in fade-in duration-700">
+                <div class="glass-panel p-8 rounded-[2.5rem]">
+                    <h2 class="text-2xl font-black text-royal mb-6 flex items-center gap-3">
+                        <i data-lucide="clipboard-check"></i> اختبارات قياس المستوى
+                    </h2>
+                    <div id="quiz-container" class="space-y-6">
+                        <p class="text-center text-gray-400 py-20">اختر مادة من القائمة لبدء الاختبار التفاعلي</p>
                     </div>
                 </div>
             </div>
@@ -280,14 +283,15 @@
             </div>
         </div>
 
-        <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm h-20 bg-white/80 backdrop-blur-2xl rounded-full border border-gold/10 flex justify-around items-center z-[200] shadow-xl">
+        <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-lg h-20 bg-white/80 backdrop-blur-2xl rounded-full border border-gold/10 flex justify-around items-center z-[200] shadow-xl px-4">
             <button onclick="showSection('home')" id="nav-home" class="nav-btn text-gold transition-all"><i data-lucide="layout-grid"></i></button>
             <button onclick="showSection('books')" id="nav-books" class="nav-btn text-gray-300 transition-all"><i data-lucide="book-marked"></i></button>
+            <button onclick="showSection('summaries')" id="nav-summaries" class="nav-btn text-gray-300 transition-all"><i data-lucide="file-text"></i></button>
             <button onclick="toggleGemini()" class="w-14 h-14 bg-gradient-to-b from-gold to-royal rounded-2xl flex items-center justify-center text-white shadow-lg -mt-10 border-4 border-pearl transition-transform hover:scale-110 active:scale-95">
                 <i data-lucide="zap"></i>
             </button>
+            <button onclick="showSection('quizzes')" id="nav-quizzes" class="nav-btn text-gray-300 transition-all"><i data-lucide="pen-tool"></i></button>
             <button onclick="showSection('medals')" id="nav-medals" class="nav-btn text-gray-300 transition-all"><i data-lucide="medal"></i></button>
-            <button onclick="openProfileEdit()" class="text-gray-300"><i data-lucide="user-cog"></i></button>
         </nav>
     </div>
 
@@ -314,30 +318,108 @@
         let authMode = 'login';
         let currentUser = null;
 
-        // منطق ردود الذكاء الاصطناعي المطوّر
+        const subjectsData = {
+            fiqh: {
+                title: "الفقه المالكي",
+                content: `<h2>كتاب البيوع</h2><p>البيع لغة: مقابلة شيء بشيء. واصطلاحاً: عقد معاوضة على غير منافع ولا متعة لذة، ذو مكايسة.</p><h3>أركان البيع:</h3><ul><li>العاقدان.</li><li>المعقود عليه.</li><li>الصيغة.</li></ul><h2>باب الربا</h2><p>الربا محرم قطعاً. وينقسم لربا الفضل وربا النساء. العلة في الذهب والفضة هي الثمنية، وفي الطعام الاقتيات والادخار.</p>`,
+                summary: "البيع عقد معاوضة يشترط فيه الرضا والطهارة. الربا محرم في المقتات والمدخر. النكاح عقد متعة بآدمي أركانه الولي والصداق.",
+                quiz: [
+                    { q: "ما هي أركان البيع عند المالكية؟", options: ["العاقدان، المعقود عليه، الصيغة", "الثمن والمثمن فقط", "الرضا فقط"], correct: 0 },
+                    { q: "ما علة الربا في الطعام؟", options: ["الطعم", "الاقتيات والادخار", "الوزن"], correct: 1 }
+                ]
+            },
+            tawhid: {
+                title: "التوحيد",
+                content: `<h2>أفعال العباد</h2><p>مذهب أهل السنة والجماعة أن للعبد اختياراً وقدرة غير مؤثرة، وهو ما يسمى بالكسب. بينما قال المعتزلة بنفي القدر.</p><h2>المعجزات</h2><p>أمر خارق للعادة يظهره الله على يد مدعي النبوة تأييداً له.</p>`,
+                summary: "الجوهرة تتناول العقيدة: السمعيات والنبوات والإلهيات. مذهب الأشاعرة هو الوسط بين الجبر والاختيار. المعجزة شرط التحدي.",
+                quiz: [
+                    { q: "ما هو الكسب عند الأشاعرة؟", options: ["انفراد العبد بالفعل", "تعلق قدرة العبد بالفعل دون تأثير", "الإجبار على الفعل"], correct: 1 }
+                ]
+            },
+            nahw: {
+                title: "النحو (ابن عقيل)",
+                content: `<h2>النائب عن الفاعل</h2><p>ينوب عن الفاعل أربعة أشياء: المفعول به، والمصدر، والظرف، والجار والمجرور.</p><h2>التنازع في العمل</h2><p>هو توجه عاملين إلى معمول واحد مثل: 'ضربت وأكرمت زيداً'.</p>`,
+                summary: "ينوب عن الفاعل المفعول به والظرف والجار والمجرور. التنازع هو عمل عاملين في اسم واحد.",
+                quiz: [
+                    { q: "أي مما يلي ينوب عن الفاعل؟", options: ["المفعول لأجله", "المصدر المختص", "الحال"], correct: 1 }
+                ]
+            }
+            // يمكن إضافة باقي المواد هنا بنفس الهيكل
+        };
+
+        function updateBookContent(sub) {
+            const data = subjectsData[sub] || { title: "قريباً", content: "<p>جاري رفع المحتوى الملكي لهذه المادة...</p>" };
+            document.getElementById('book-display-area').innerHTML = data.content;
+        }
+
+        function loadSummaries() {
+            const grid = document.getElementById('summaries-grid');
+            grid.innerHTML = Object.keys(subjectsData).map(key => `
+                <div class="glass-panel p-6 summary-card cursor-pointer" onclick="showSection('books'); updateBookContent('${key}')">
+                    <h4 class="font-black text-royal mb-2">${subjectsData[key].title}</h4>
+                    <p class="text-[10px] text-gray-500 leading-relaxed">${subjectsData[key].summary}</p>
+                </div>
+            `).join('');
+        }
+
+        function startQuiz(sub) {
+            const data = subjectsData[sub];
+            const container = document.getElementById('quiz-container');
+            if(!data || !data.quiz) {
+                container.innerHTML = `<p class="text-center text-gold font-bold">عذراً، اختبار ${sub} قيد الإعداد.</p>`;
+                return;
+            }
+            container.innerHTML = data.quiz.map((item, idx) => `
+                <div class="space-y-4 p-4 bg-white rounded-2xl border border-gold/10">
+                    <p class="font-bold text-sm text-gray-700">${idx+1}. ${item.q}</p>
+                    <div class="grid gap-2">
+                        ${item.options.map((opt, oIdx) => `
+                            <button onclick="checkAnswer(this, ${oIdx === item.correct})" class="quiz-option p-3 rounded-xl text-right text-xs font-medium">${opt}</button>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function checkAnswer(btn, isCorrect) {
+            btn.style.background = isCorrect ? '#dcfce7' : '#fee2e2';
+            btn.style.borderColor = isCorrect ? '#22c55e' : '#ef4444';
+            if(isCorrect) unlockMedal(4);
+        }
+
         const geminiLogic = (query) => {
             query = query.toLowerCase();
             unlockMedal(3);
             if (query.includes("بيع")) return "البيع في الفقه المالكي هو عقد معاوضة على غير منافع. يشترط فيه التراضي وطهارة المبيع وقدرة التسليم. هل تود شرح ركن الصيغة؟";
             if (query.includes("ربا")) return "الربا نوعان: ربا الفضل (زيادة في النوع الواحد كذهب بذهب مع زيادة) وربا النساء (التأخير في القبض). وكلاهما محرم شرعاً بنصوص قطعية.";
-            if (query.includes("نكاح") || query.includes("زواج")) return "النكاح ميثاق غليظ، أركانه عند الإمام مالك: الولي، الصداق، المحل، والصيغة. والولي شرط صحة لا ينعقد العقد بدونه.";
-            if (query.includes("سلم")) return "السلم (السلف) هو تقديم الثمن وتأخير المثمن الموصوف في الذمة. وهو رخصة استثنائية للحاجة.";
-            if (query.includes("خيار")) return "الخيار هو حق فسخ العقد أو إمضائه، والمشهور في المذهب خيار التروي وخيار العيب.";
-            if (query.includes("مساعدة") || query.includes("كيف")) return "يمكنني شرح أي باب في الفقه المالكي، أو مساعدتك في تصفح رِكاز. فقط اسألني عن موضوع محدد!";
-            return "بصفتي Gemini Advanced، أنا هنا لدعم رحلتك العلمية في رِكاز. هل يمكنني توضيح مسألة فقهية معينة لك؟";
+            if (query.includes("نائب") || query.includes("فاعل")) return "ينوب عن الفاعل المفعول به (وهو الأصل)، والمصدر، والظرف، والجار والمجرور. مثال: ضُرِبَ زيدٌ.";
+            return "بصفتي Gemini Advanced، أنا هنا لدعم رحلتك العلمية في رِكاز. هل يمكنني توضيح مسألة في النحو أو الفقه أو التوحيد؟";
         };
 
         function showSection(sectionId) {
-            document.getElementById('section-home').classList.add('hidden');
-            document.getElementById('section-books').classList.add('hidden');
-            document.getElementById('section-medals').classList.add('hidden');
+            ['home', 'books', 'medals', 'summaries', 'quizzes'].forEach(s => {
+                const el = document.getElementById('section-' + s);
+                if(el) el.classList.add('hidden');
+            });
             document.getElementById('section-' + sectionId).classList.remove('hidden');
             
-            // تحديث حالة الأزرار
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('text-gold', 'scale-110'));
-            document.getElementById('nav-' + sectionId).classList.add('text-gold', 'scale-110');
+            const activeBtn = document.getElementById('nav-' + sectionId);
+            if(activeBtn) activeBtn.classList.add('text-gold', 'scale-110');
             
-            if(sectionId === 'books') unlockMedal(4);
+            if(sectionId === 'summaries') loadSummaries();
+            if(sectionId === 'quizzes') {
+                const container = document.getElementById('quiz-container');
+                container.innerHTML = `
+                    <div class="grid grid-cols-2 gap-4">
+                        ${Object.keys(subjectsData).map(key => `
+                            <button onclick="startQuiz('${key}')" class="p-4 bg-gold/5 border border-gold/10 rounded-2xl font-bold text-royal hover:bg-gold hover:text-white transition-all">
+                                اختبار ${subjectsData[key].title}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+            }
         }
 
         function toggleAuthMode(mode) {
@@ -389,6 +471,7 @@
                     document.getElementById('main-app').style.opacity = '1'; 
                     loadPosts(); 
                     unlockMedal(1);
+                    updateBookContent('fiqh');
                 }, 100);
             }, 500);
             initGemini();
