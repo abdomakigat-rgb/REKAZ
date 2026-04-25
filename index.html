@@ -9,7 +9,7 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;400;700;900&family=Lalezar&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;400;700;900&family=Cinzel:wght@900&family=Lalezar&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -24,11 +24,16 @@
                     animation: {
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'float': 'float 3s ease-in-out infinite',
+                        'super-glow': 'superGlow 2s ease-in-out infinite',
                     },
                     keyframes: {
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
                             '50%': { transform: 'translateY(-10px)' },
+                        },
+                        superGlow: {
+                            '0%, 100%': { filter: 'drop-shadow(0 0 10px #C5A059) brightness(1)' },
+                            '50%': { filter: 'drop-shadow(0 0 30px #C5A059) brightness(1.3)' },
                         }
                     }
                 }
@@ -38,14 +43,15 @@
     <style>
         body { font-family: 'Vazirmatn', sans-serif; background-color: #F9F6F0; color: #2D2D2D; overflow-x: hidden; }
         
+        /* الفونت الجديد المطلوب باسم Change */
         .brand-name { 
-            font-family: 'Lalezar', cursive; 
+            font-family: 'Cinzel', serif; 
             background: linear-gradient(135deg, #8E6F3E 0%, #C5A059 50%, #8E6F3E 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 2px 4px rgba(142, 111, 62, 0.2));
             background-size: 200% auto;
-            animation: shine 4s ease infinite;
+            animation: shine 3s linear infinite;
+            letter-spacing: -2px;
         }
 
         @keyframes shine {
@@ -53,25 +59,47 @@
         }
 
         #splash-screen {
-            background: #F9F6F0;
+            background: radial-gradient(circle at center, #ffffff 0%, #F9F6F0 100%);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
         }
         
-        .loader-glow {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(197, 160, 89, 0.2) 0%, transparent 70%);
-            animation: breathe 2s ease-in-out infinite;
-            position: absolute;
+        /* تأثير تحميل جبار */
+        .power-loader {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        @keyframes breathe {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.5); opacity: 1; }
+        .loader-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid transparent;
+            border-top-color: #C5A059;
+            border-radius: 50%;
+            animation: rotate 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+        }
+
+        .loader-ring-inner {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            border: 4px solid transparent;
+            border-bottom-color: #8E6F3E;
+            border-radius: 50%;
+            animation: rotate 2s linear infinite reverse;
+            opacity: 0.5;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .glass-panel { 
@@ -111,14 +139,15 @@
 <body class="antialiased">
 
     <div id="splash-screen" class="fixed inset-0 z-[1000] transition-all duration-1000">
-        <div class="loader-glow"></div>
-        <div class="relative">
-            <h1 class="text-7xl font-black brand-name select-none">رِكاز</h1>
+        <div class="power-loader">
+            <div class="loader-ring"></div>
+            <div class="loader-ring-inner"></div>
+            <h1 class="text-7xl font-black brand-name select-none animate-super-glow">رِكاز</h1>
         </div>
-        <div class="mt-8 flex flex-col items-center">
-            <p class="text-gold font-medium tracking-widest text-[10px] uppercase mb-3">فخامة المحتوى والجوهر</p>
-            <div class="w-48 h-0.5 bg-gold/10 rounded-full overflow-hidden">
-                <div id="progress-bar" class="w-0 h-full bg-gold transition-all duration-700"></div>
+        <div class="mt-12 flex flex-col items-center">
+            <p id="loading-text" class="text-royal font-black tracking-[0.3em] text-[12px] uppercase mb-4 animate-pulse">يتم استحضار العظمة...</p>
+            <div class="w-64 h-1.5 bg-gold/10 rounded-full overflow-hidden p-0.5 border border-gold/5">
+                <div id="progress-bar" class="w-0 h-full bg-gradient-to-r from-gold to-royal rounded-full transition-all duration-700 shadow-[0_0_15px_#C5A059]"></div>
             </div>
         </div>
     </div>
@@ -180,7 +209,7 @@
                     <p class="text-[9px] text-gold font-black uppercase tracking-tighter italic">عضو ملكي مستنير</p>
                 </div>
             </div>
-            <h1 class="brand-name text-3xl font-bold md:block hidden">رِكاز</h1>
+            <h1 class="brand-name text-4xl font-bold md:block hidden">رِكاز</h1>
             <button onclick="logoutMaki()" class="p-3 bg-red-50 text-red-400 rounded-xl hover:bg-red-100 transition-all"><i data-lucide="log-out" class="w-5 h-5"></i></button>
         </header>
 
@@ -203,7 +232,7 @@
                     <div class="flex items-center justify-between mb-8">
                         <div class="flex items-center gap-4">
                             <i data-lucide="library" class="text-gold w-8 h-8"></i>
-                            <h2 class="text-4xl font-bold brand-name">المكتبة الأزهرية - 2 ثانوي</h2>
+                            <h2 class="text-4xl font-bold brand-name">المكتبة</h2>
                         </div>
                         <select onchange="updateBookContent(this.value)" class="bg-gold/5 border border-gold/20 rounded-xl px-4 py-2 text-xs font-bold outline-none">
                             <option value="fiqh">الفقه المالكي</option>
@@ -222,7 +251,7 @@
             </div>
 
             <div id="section-summaries" class="hidden space-y-8 animate-in fade-in duration-700">
-                <h2 class="text-3xl font-black brand-name border-b-2 border-gold/10 pb-4">موجز العباقرة (التلخيص)</h2>
+                <h2 class="text-3xl font-black brand-name border-b-2 border-gold/10 pb-4">موجز العباقرة</h2>
                 <div class="grid md:grid-cols-2 gap-4" id="summaries-grid">
                     </div>
             </div>
@@ -452,12 +481,10 @@
             lucide.createIcons();
         }
 
-        // المحرك المطور: يرد على أي شيء بذكاء
         const geminiLogic = (query) => {
             query = query.trim().toLowerCase();
             unlockMedal(3);
 
-            // 1. قاعدة بيانات المنهج (أولوية قصوى)
             const curriculum = [
                 { keys: ["بيع", "تجارة", "خيار", "ثمن"], response: "في الفقه المالكي، البيع عقد معاوضة يشترط فيه الرضا. هل تقصد أركان البيع أم أحكام الخيارات؟" },
                 { keys: ["فاعل", "نحو", "ابن عقيل", "نائب", "مفعول"], response: "النحو ميزان الكلام! تذكر أن الفاعل دائماً مرفوع. هل تريد أمثلة على 'نائب الفاعل' أو 'التنازع'؟" },
@@ -466,28 +493,20 @@
                 { keys: ["أندلس", "أدب", "نصوص", "ابن زيدون"], response: "الأدب الأندلسي رقيق كطبيعتهم. هل تريد الحديث عن الموشحات أم الرسالة الجدية لابن زيدون؟" }
             ];
 
-            // البحث في المنهج
             for (let item of curriculum) {
                 if (item.keys.some(k => query.includes(k))) {
                     return `<b>[رِكاز الأكاديمي]:</b><br>${item.response}`;
                 }
             }
 
-            // 2. الردود التفاعلية للدردشة
             if (query.includes("سلام") || query.includes("مرحب") || query.includes("اهلا")) {
                 return `أهلاً بك يا <b>${currentUser.name}</b> في رحاب رِكاز. أنا هنا لأكون رفيقك في رحلة العلم، ماذا نحضر اليوم؟`;
             }
             
-            if (query.length < 5) {
-                return "كلماتك بسيطة لكنها بداية لفكرة عظيمة.. أكمل حديثك، أنا أسمعك!";
-            }
-
-            // 3. المحرك التحليلي العام (لأي سؤال آخر)
             const generalResponses = [
-                `سؤال ذكي جداً! بصفتي ذكاء رِكاز الاصطناعي، أرى أن "<b>${query}</b>" موضوع يستحق البحث. كيف يمكنني ربطه بمنهجك الأزهري؟`,
+                `سؤال ذكي جداً! بصفتي ذكاء رِكاز الاصطناعي، أرى أن "<b>${query}</b>" موضوع يستحق البحث.`,
                 `بناءً على تحليلي لطلبك، يبدو أنك تبحث عن المعرفة بعمق. هل يمكنني مساعدتك في تلخيص هذا الجزء؟`,
-                `مثير للاهتمام! دعنا نفكر في هذا معاً من منظور أدبي أو فقهي، ما رأيك؟`,
-                `رِكاز مبرمجة لترد عليك دائماً.. فكرة "<b>${query}</b>" تفتح آفاقاً جديدة، هل نطبقها على دروسنا؟`
+                `مثير للاهتمام! دعنا نفكر في هذا معاً من منظور أدبي أو فقهي، ما رأيك؟`
             ];
 
             return generalResponses[Math.floor(Math.random() * generalResponses.length)];
@@ -640,7 +659,7 @@
         }
 
         function initGemini() {
-            document.getElementById('chat-content').innerHTML = `<div class="bg-blue-50 p-4 rounded-2xl mb-2 text-blue-600 border border-blue-100">مرحباً ${currentUser.name}، أنا Gemini المساعد الذكي لرِكاز. أستطيع الرد على أي شيء تكتبه، سواء في المنهج أو خارجه. جربني الآن!</div>`;
+            document.getElementById('chat-content').innerHTML = `<div class="bg-blue-50 p-4 rounded-2xl mb-2 text-blue-600 border border-blue-100">مرحباً ${currentUser.name}، أنا Gemini المساعد الذكي لرِكاز.</div>`;
         }
 
         function sendToGemini() {
@@ -664,12 +683,18 @@
 
         window.addEventListener('load', () => {
             const bar = document.getElementById('progress-bar');
-            bar.style.width = '100%';
+            const loadingText = document.getElementById('loading-text');
+            
+            // مراحل التحميل الجبارة
+            setTimeout(() => { bar.style.width = '30%'; loadingText.innerText = 'يتم تحليل الرموز الملكية...'; }, 500);
+            setTimeout(() => { bar.style.width = '70%'; loadingText.innerText = 'بناء الجوهر المعرفي...'; }, 1200);
+            setTimeout(() => { bar.style.width = '100%'; loadingText.innerText = 'اكتملت العظمة!'; }, 2000);
+
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
                 splash.style.opacity = '0';
                 setTimeout(() => splash.style.display = 'none', 1000);
-            }, 2000);
+            }, 2500);
         });
     </script>
 </body>
