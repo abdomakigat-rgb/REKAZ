@@ -3,152 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Street Wars: Multiplayer</title>
+    <title>Street Wars: Extreme Pursuit</title>
     <style>
-        body { margin: 0; overflow: hidden; background-color: #000; font-family: sans-serif; }
+        body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         #ui {
             position: absolute; top: 20px; left: 20px; color: white;
-            background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px;
-            pointer-events: none;
+            background: rgba(0,0,0,0.7); padding: 20px; border-radius: 15px;
+            border: 1px solid #333; pointer-events: none;
         }
-        .controls { font-size: 12px; color: #ccc; }
+        #speed-box {
+            position: absolute; bottom: 30px; right: 30px; color: #00ff00;
+            background: rgba(0,0,0,0.8); padding: 20px; border-radius: 50%;
+            width: 80px; height: 80px; display: flex; align-items: center;
+            justify-content: center; border: 4px solid #00ff00; font-weight: bold; font-size: 24px;
+        }
+        .police-ui { color: #3498db; }
+        .criminal-ui { color: #e74c3c; }
     </style>
 </head>
 <body>
 
     <div id="ui">
-        <h2>Street Wars Online</h2>
-        <div id="status">جاري الاتصال بالسيرفر...</div>
-        <div class="controls">استخدم الأسهم للتحرك | ESC للخروج</div>
+        <h2 id="role-text">Street Wars</h2>
+        <div id="status">جاري الاتصال...</div>
+        <div style="margin-top:10px; font-size: 13px;">
+            SHIFT: نيترو | الأسهم: قيادة
+        </div>
     </div>
+
+    <div id="speed-box"><span id="speed-val">0</span></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 
     <script>
-        // 1. إعداد السيرفر (استبدل الرابط برابط سيرفرك عند الرفع)
         const socket = io('http://localhost:3000');
-        
-        // 2. إعداد مشهد Three.js
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x111111);
+        scene.fog = new THREE.Fog(0x111111, 10, 50); // تأثير ضبابي لزيادة الواقعية
+
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // إضاءة احترافية
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-        scene.add(ambientLight);
-        const sunLight = new THREE.DirectionalLight(0xffffff, 1);
-        sunLight.position.set(5, 10, 7);
-        scene.add(sunLight);
+        // إضاءة ليلية
+        scene.add(new THREE.AmbientLight(0x404040, 0.5));
+        const cityLight = new THREE.PointLight(0xffffff, 1);
+        cityLight.position.set(0, 50, 0);
+        scene.add(cityLight);
 
-        // أرضية المدينة (Grid)
-        const grid = new THREE.GridHelper(200, 50, 0x444444, 0x222222);
-        scene.add(grid);
+        // إنشاء الطريق
+        const roadGeo = new THREE.PlaneGeometry(200, 200);
+        const roadMat = new THREE.MeshStandardMaterial({ color: 0x222222 });
+        const road = new THREE.Mesh(roadGeo, roadMat);
+        road.rotation.x = -Math.PI / 2;
+        scene.add(road);
+        scene.add(new THREE.GridHelper(200, 40, 0xffffff, 0x333333));
 
-        // 3. تعريف اللاعبين
-        let otherPlayers = {};
-        let myCar;
-
-        // دالة لإنشاء شكل سيارة
-        function createCar(color = 0x00ff00) {
+        // دالة إنشاء سيارة متطورة
+        function createCar(isPolice = false) {
             const group = new THREE.Group();
-            // جسم السيارة
+            const color = isPolice ? 0x1a1a1a : 0xcc0000;
+            
+            // الجسم
             const body = new THREE.Mesh(
-                new THREE.BoxGeometry(1.2, 0.6, 2.5),
+                new THREE.BoxGeometry(1.2, 0.5, 2.5),
                 new THREE.MeshStandardMaterial({ color: color })
             );
-            body.position.y = 0.3;
+            body.position.y = 0.4;
             group.add(body);
-            // سقف السيارة
-            const roof = new THREE.Mesh(
-                new THREE.BoxGeometry(1, 0.5, 1.2),
-                new THREE.MeshStandardMaterial({ color: color })
-            );
-            roof.position.y = 0.8;
-            roof.position.z = -0.2;
-            group.add(roof);
+
+            // الكشافات الأمامية (Headlights)
+            const lightGeo = new THREE.BoxGeometry(0.4, 0.1, 0.1);
+            const lightMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            const l1 = new THREE.Mesh(lightGeo, lightMat);
+            l1.position.set(0.3, 0.4, -1.25);
+            group.add(l1);
+            const l2 = l1.clone();
+            l2.position.x = -0.3;
+            group.add(l2);
+
+            if(isPolice) {
+                // سارينة الشرطة
+                const sirenGeo = new THREE.BoxGeometry(0.8, 0.1, 0.2);
+                const sirenMat = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+                const siren = new THREE.Mesh(sirenGeo, sirenMat);
+                siren.position.y = 0.9;
+                group.add(siren);
+                group.userData.siren = siren; // لحفظ المرجع عشان نغير لونه
+            }
+
             return group;
         }
 
-        // إنشاء سيارتي أنا
-        myCar = createCar(0x00ff00); // أخضر للاعب الحالي
+        // إعداد اللاعب الحالي
+        let isPolice = Math.random() > 0.5;
+        let myCar = createCar(isPolice);
         scene.add(myCar);
+        
+        document.getElementById('role-text').innerText = isPolice ? "أنت: الشرطة" : "أنت: هارب";
+        document.getElementById('role-text').className = isPolice ? "police-ui" : "criminal-ui";
 
-        // 4. نظام التحكم
-        const keys = { ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false };
+        // التحكم والحركة
+        const keys = {};
         window.addEventListener('keydown', e => keys[e.code] = true);
         window.addEventListener('keyup', e => keys[e.code] = false);
 
         let speed = 0;
-        const maxSpeed = 0.5;
-        const acceleration = 0.01;
-        const friction = 0.005;
+        let rotationSpeed = 0;
 
-        // 5. التعامل مع بيانات السيرفر (Socket Events)
-        socket.on('connect', () => {
-            document.getElementById('status').innerText = "متصل أونلاين";
-        });
-
-        socket.on('currentPlayers', (players) => {
-            Object.keys(players).forEach((id) => {
-                if (id !== socket.id) {
-                    addOtherPlayer(id, players[id]);
-                }
-            });
-        });
-
-        socket.on('newPlayer', (data) => {
-            addOtherPlayer(data.id, data.data);
-        });
-
-        socket.on('playerMoved', (data) => {
-            if (otherPlayers[data.id]) {
-                otherPlayers[data.id].position.set(data.data.x, 0, data.data.z);
-                otherPlayers[data.id].rotation.y = data.data.rotation;
-            }
-        });
-
-        socket.on('playerDisconnected', (id) => {
-            scene.remove(otherPlayers[id]);
-            delete otherPlayers[id];
-        });
-
-        function addOtherPlayer(id, data) {
-            const color = data.role === 'police' ? 0x0000ff : 0xff0000;
-            otherPlayers[id] = createCar(color);
-            scene.add(otherPlayers[id]);
-        }
-
-        // 6. حلقة التحديث والرسم (Game Loop)
         function update() {
-            // منطق الحركة
-            if (keys['ArrowUp']) speed = Math.min(speed + acceleration, maxSpeed);
-            else if (keys['ArrowDown']) speed = Math.max(speed - acceleration, -maxSpeed/2);
-            else {
-                if (speed > 0) speed -= friction;
-                if (speed < 0) speed += friction;
-            }
+            // منطق القيادة
+            let currentMax = keys['ShiftLeft'] ? 0.8 : 0.4; // نيترو
+            
+            if (keys['ArrowUp']) speed = THREE.MathUtils.lerp(speed, currentMax, 0.05);
+            else if (keys['ArrowDown']) speed = THREE.MathUtils.lerp(speed, -0.2, 0.05);
+            else speed = THREE.MathUtils.lerp(speed, 0, 0.02);
 
-            if (keys['ArrowLeft']) myCar.rotation.y += 0.04;
-            if (keys['ArrowRight']) myCar.rotation.y -= 0.04;
+            if (keys['ArrowLeft']) rotationSpeed = THREE.MathUtils.lerp(rotationSpeed, 0.04, 0.1);
+            else if (keys['ArrowRight']) rotationSpeed = THREE.MathUtils.lerp(rotationSpeed, -0.04, 0.1);
+            else rotationSpeed = THREE.MathUtils.lerp(rotationSpeed, 0, 0.1);
 
+            myCar.rotation.y += rotationSpeed * (speed * 2);
             myCar.translateZ(-speed);
 
-            // إرسال التحديث للسيرفر
+            // تحديث الواجهة
+            document.getElementById('speed-val').innerText = Math.round(Math.abs(speed * 200));
+
+            // تأثير السارينة (لو شرطة)
+            if(isPolice && myCar.userData.siren) {
+                const t = Date.now() * 0.01;
+                myCar.userData.siren.material.color.setHex(Math.sin(t) > 0 ? 0xff0000 : 0x0000ff);
+            }
+
+            // الكاميرا (Chase Camera)
+            const offset = new THREE.Vector3(0, 2, 6);
+            const worldOffset = offset.applyMatrix4(myCar.matrixWorld);
+            camera.position.lerp(worldOffset, 0.1);
+            camera.lookAt(myCar.position);
+
+            // إرسال البيانات للسيرفر
             socket.emit('playerMovement', {
                 x: myCar.position.x,
                 z: myCar.position.z,
-                rotation: myCar.rotation.y
+                rotation: myCar.rotation.y,
+                isPolice: isPolice
             });
-
-            // جعل الكاميرا تتبع السيارة
-            const relativeCameraOffset = new THREE.Vector3(0, 3, 7);
-            const cameraOffset = relativeCameraOffset.applyMatrix4(myCar.matrixWorld);
-            camera.position.lerp(cameraOffset, 0.1);
-            camera.lookAt(myCar.position);
         }
 
         function animate() {
@@ -156,15 +156,18 @@
             update();
             renderer.render(scene, camera);
         }
+        animate();
 
-        // التعامل مع تغيير حجم النافذة
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
+        // Socket Events
+        socket.on('playerMoved', (data) => {
+            if (!otherPlayers[data.id]) {
+                otherPlayers[data.id] = createCar(data.data.isPolice);
+                scene.add(otherPlayers[id]);
+            }
+            otherPlayers[data.id].position.set(data.data.x, 0, data.data.z);
+            otherPlayers[data.id].rotation.y = data.data.rotation;
         });
 
-        animate();
     </script>
 </body>
 </html>
