@@ -19,6 +19,14 @@
             --gradient: linear-gradient(135deg, #2563eb, #7c3aed);
         }
 
+        /* [DEVELOPER ADDITION] Dark Mode Variables */
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
+            --shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
         body {
             font-family: 'Cairo', sans-serif;
             background-color: var(--bg);
@@ -28,6 +36,25 @@
             display: flex;
             justify-content: center;
             min-height: 100vh;
+            transition: background 0.3s ease;
+        }
+
+        /* [DEVELOPER ADDITION] Dark Mode Toggle */
+        .theme-switch {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1001;
+            background: var(--gradient);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            box-shadow: var(--shadow);
         }
 
         .container {
@@ -74,6 +101,7 @@
             text-align: center;
             display: none;
             margin-top: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         .auth-card.active { display: block; animation: scaleUp 0.4s ease-in-out; }
@@ -93,7 +121,21 @@
             font-weight: bold;
             box-shadow: var(--shadow);
             margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
         }
+
+        /* [DEVELOPER ADDITION] Clock Shine Effect */
+        .top-clock::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+        @keyframes shine { 0% { transform: translateX(-100%) rotate(45deg); } 100% { transform: translateX(100%) rotate(45deg); } }
 
         .profile-section {
             background: var(--card);
@@ -103,6 +145,17 @@
             text-align: center;
             margin-bottom: 20px;
             position: relative;
+        }
+
+        /* [DEVELOPER ADDITION] Rank Badge */
+        .rank-badge {
+            background: var(--accent);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-top: 5px;
+            display: inline-block;
         }
 
         .logout-btn {
@@ -179,10 +232,12 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            backdrop-filter: blur(5px);
         }
 
         .modal-content {
-            background: white;
+            background: var(--card);
+            color: var(--text);
             padding: 25px;
             border-radius: 20px;
             width: 100%;
@@ -235,6 +290,8 @@
             font-family: 'Cairo';
             box-sizing: border-box;
             transition: 0.3s;
+            background: var(--card);
+            color: var(--text);
         }
 
         textarea { padding: 12px; min-height: 80px; resize: none; }
@@ -247,7 +304,7 @@
 
         .day-chip {
             padding: 6px 12px; border: 1px solid #ddd; border-radius: 10px;
-            font-size: 0.85rem; cursor: pointer; transition: 0.3s; background: #fff;
+            font-size: 0.85rem; cursor: pointer; transition: 0.3s; background: var(--card);
         }
 
         .day-chip.selected {
@@ -258,16 +315,19 @@
             width: 100%; padding: 14px; background: var(--gradient); color: white;
             border: none; border-radius: 12px; cursor: pointer; font-weight: bold;
             font-size: 1rem; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
         }
 
         button:hover { filter: brightness(1.1); transform: translateY(-1px); }
 
         .post-card {
-            background: white;
+            background: var(--card);
             border-radius: 20px;
             padding: 15px;
             margin-bottom: 15px;
             box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.05);
+            animation: fadeIn 0.5s ease-out;
         }
         .post-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
         .post-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
@@ -282,6 +342,7 @@
             border-radius: 20px;
             margin-bottom: 20px;
             display: none;
+            border: 2px solid var(--accent);
         }
         .user-data-row {
             background: rgba(255,255,255,0.1);
@@ -291,13 +352,16 @@
             font-size: 0.8rem;
             display: flex;
             justify-content: space-between;
+            align-items: center;
         }
 
         .lesson-card {
             background: var(--card); padding: 18px; border-radius: 18px; margin-bottom: 15px;
             display: flex; justify-content: space-between; align-items: center;
             border-right: 6px solid var(--primary); box-shadow: var(--shadow);
+            transition: 0.3s;
         }
+        .lesson-card:hover { transform: scale(1.02); }
 
         footer { text-align: center; margin-top: 30px; font-size: 0.9rem; color: #6b7280; padding-bottom: 30px; }
         .dev-tag { color: var(--primary); font-weight: 700; font-size: 1.1rem; }
@@ -307,21 +371,19 @@
             padding: 10px; border-radius: 12px; cursor: pointer; margin-bottom: 15px; color: #64748b;
         }
 
-        /* تنسيق زر التثبيت الجديد */
-        #install-app-btn {
-            display: none;
-            background: var(--accent);
-            margin-bottom: 15px;
-            border-radius: 15px;
-            animation: bounce 2s infinite;
-        }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+        /* [DEVELOPER ADDITION] Pulse Animation for Buttons */
+        .pulse { animation: pulse-animation 2s infinite; }
+        @keyframes pulse-animation { 
+            0% { box-shadow: 0 0 0 0px rgba(37, 99, 235, 0.4); }
+            100% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
         }
     </style>
 </head>
 <body>
+
+<div class="theme-switch" onclick="toggleTheme()">
+    <i class="fas fa-moon" id="theme-icon"></i>
+</div>
 
 <div class="container">
     <div class="logo-container">
@@ -334,7 +396,7 @@
         <h2 style="color:var(--text)">مرحباً بعودتك!</h2>
         <div class="input-field"><i class="fas fa-user"></i><input type="text" id="login-user" placeholder="اسم المستخدم"></div>
         <div class="input-field"><i class="fas fa-lock"></i><input type="password" id="login-pass" placeholder="كلمة السر"></div>
-        <button onclick="authAction('login')">تسجيل الدخول</button>
+        <button onclick="authAction('login')" class="pulse">تسجيل الدخول</button>
         <div class="switch-auth" onclick="toggleAuth()">لا تملك حساب؟ ابدأ الآن</div>
     </div>
 
@@ -353,14 +415,12 @@
     </div>
 
     <div id="main-content" style="display: none;">
-        <button id="install-app-btn" onclick="installPWA()">
-            <i class="fas fa-download"></i> تثبيت المنصة على جهازك
-        </button>
-
         <div id="admin-panel">
-            <h4><i class="fas fa-user-crown"></i> لوحة تحكم محمد (الأدمن)</h4>
+            <h4><i class="fas fa-crown"></i> لوحة تحكم محمد (الأدمن)</h4>
             <div id="admin-users-list"></div>
-            <button onclick="exportData()" style="background: #334155; font-size: 0.8rem; padding: 8px; margin-top: 10px;">تصدير قاعدة البيانات</button>
+            <button onclick="exportData()" style="background: #334155; font-size: 0.8rem; padding: 8px; margin-top: 10px;">
+                <i class="fas fa-download"></i> تصدير قاعدة البيانات
+            </button>
         </div>
 
         <div class="top-clock" id="main-clock">00:00:00</div>
@@ -374,19 +434,22 @@
                 <div class="edit-badge"><i class="fas fa-camera"></i></div>
             </div>
             <h3 id="username-display" style="margin:5px 0;"></h3>
+            <div id="user-rank" class="rank-badge"><i class="fas fa-star"></i> مبتدئ هِمة</div>
             <div id="motivational-msg" class="motivational-msg"></div>
         </div>
 
         <div class="input-group">
             <h4 style="margin-top:0;"><i class="fas fa-share-nodes"></i> شارك هِمتك مع الجميع</h4>
             <textarea id="post-input" placeholder="اكتب إنجازك اليوم أو نصيحة لزمايلك..."></textarea>
-            <button onclick="createPost()" style="margin-top:10px; background: var(--success); background-image:none;"><i class="fas fa-paper-plane"></i> نشر</button>
+            <button onclick="createPost()" style="margin-top:10px; background: var(--success); background-image:none;">
+                <i class="fas fa-paper-plane"></i> نشر الآن
+            </button>
         </div>
 
         <div id="posts-feed"></div>
 
         <div class="input-group">
-            <h4 style="margin-top:0;"><i class="fas fa-pen-fancy"></i> خطط ليومك الدراسي</h4>
+            <h4 style="margin-top:0;"><i class="fas fa-calendar-check"></i> خطط ليومك الدراسي</h4>
             <div class="input-field">
                 <i class="fas fa-book"></i>
                 <input type="text" id="subject-input" placeholder="اسم المادة">
@@ -404,16 +467,17 @@
                 <div class="day-chip" data-day="الخميس">الخميس</div>
                 <div class="day-chip" data-day="الجمعة">الجمعة</div>
             </div>
-            <button onclick="saveLesson()" style="margin-top:20px;"><i class="fas fa-save"></i> حفظ في الجدول</button>
+            <button onclick="saveLesson()" style="margin-top:20px;">
+                <i class="fas fa-plus-circle"></i> إضافة للجدول
+            </button>
         </div>
 
         <div id="lessons-container"></div>
 
         <footer>
             جميع الحقوق محفوظة لمنصة <span style="font-weight: bold; color: var(--primary);">هِمة</span> <br>
-            تم التطوير والتحديث بواسطة المبرمج <br>
-            <span class="dev-tag">محمد مصطفى محمد يوسف</span> <br>
-            <small>آخر تحديث: أبريل 2026</small>
+            تم التطوير بواسطة <br>
+            <span class="dev-tag">محمد مصطفى محمد يوسف</span>
         </footer>
     </div>
 </div>
@@ -441,23 +505,17 @@
     let selectedDays = [];
     let currentY = 50;
     let globalPosts = JSON.parse(localStorage.getItem('hemma_global_posts')) || [];
-    let deferredPrompt;
 
-    // منطق زر التثبيت
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        document.getElementById('install-app-btn').style.display = 'block';
-    });
-
-    async function installPWA() {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                document.getElementById('install-app-btn').style.display = 'none';
-            }
-            deferredPrompt = null;
+    // [DEVELOPER ADDITION] Toggle Theme Function
+    function toggleTheme() {
+        const body = document.body;
+        const icon = document.getElementById('theme-icon');
+        if (body.getAttribute('data-theme') === 'dark') {
+            body.removeAttribute('data-theme');
+            icon.className = 'fas fa-moon';
+        } else {
+            body.setAttribute('data-theme', 'dark');
+            icon.className = 'fas fa-sun';
         }
     }
 
@@ -495,7 +553,7 @@
             const user = document.getElementById('login-user').value;
             const pass = document.getElementById('login-pass').value;
             if(user === 'محمد' && pass === 'محمد') {
-                currentUser = { username: 'محمد', isAdmin: true, img: 'https://via.placeholder.com/150', lessons: [], imgPos: 50 };
+                currentUser = { username: 'محمد', isAdmin: true, img: 'https://via.placeholder.com/150', lessons: [], imgPos: 50, points: 1000 };
                 startApp();
                 return;
             }
@@ -520,9 +578,20 @@
             document.getElementById('admin-panel').style.display = 'block';
             loadAdminData();
         }
+        
+        // Update Rank
+        updateRank();
         renderPosts();
         updateUI();
         setInterval(updateUI, 1000);
+    }
+
+    function updateRank() {
+        const rankBadge = document.getElementById('user-rank');
+        const p = currentUser.points || 0;
+        if(p < 50) rankBadge.innerHTML = '<i class="fas fa-seedling"></i> مبتدئ هِمة';
+        else if(p < 200) rankBadge.innerHTML = '<i class="fas fa-star"></i> طموح هِمة';
+        else rankBadge.innerHTML = '<i class="fas fa-crown"></i> بطل هِمة';
     }
 
     function logout() {
@@ -543,7 +612,7 @@
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `hemma_database_${new Date().toLocaleDateString()}.json`;
+        a.download = `hemma_db_${new Date().getTime()}.json`;
         a.click();
     }
 
@@ -577,14 +646,12 @@
     function startDrag(startY) {
         const initialY = currentY;
         const onMove = (moveEvent) => {
-            const currentMoveY = moveEvent.clientY || (moveEvent.touches && moveEvent.touches[0].clientY);
+            const currentMoveY = moveEvent.clientY || moveEvent.touches[0].clientY;
             const diff = (currentMoveY - startY) / 2;
             currentY = Math.max(0, Math.min(100, initialY - diff));
             previewImg.style.objectPosition = `center ${currentY}%`;
         };
-        const stopDrag = () => {
-            document.onmousemove = document.ontouchmove = null;
-        };
+        const stopDrag = () => { document.onmousemove = document.ontouchmove = null; };
         document.onmousemove = document.ontouchmove = onMove;
         document.onmouseup = document.ontouchend = stopDrag;
     }
@@ -601,12 +668,9 @@
     function saveNewPhoto() {
         currentUser.img = previewImg.src;
         currentUser.imgPos = currentY;
-        const mainImg = document.getElementById('user-img');
-        mainImg.src = currentUser.img;
-        mainImg.style.objectPosition = `center ${currentY}%`;
         saveToStorage();
         closePhotoEditor();
-        renderPosts();
+        location.reload(); 
     }
 
     function createPost() {
@@ -614,13 +678,19 @@
         if(!text) return;
         globalPosts.unshift({author: currentUser.username, avatar: currentUser.img, content: text, date: new Date().toLocaleString('ar-EG')});
         localStorage.setItem('hemma_global_posts', JSON.stringify(globalPosts));
+        
+        // Bonus Points
+        currentUser.points = (currentUser.points || 0) + 10;
+        saveToStorage();
+        
         document.getElementById('post-input').value = '';
         renderPosts();
+        updateRank();
     }
 
     function renderPosts() {
         const feed = document.getElementById('posts-feed');
-        feed.innerHTML = '<h4>آخر الأخبار:</h4>';
+        feed.innerHTML = '<h4>آخر التحديثات:</h4>';
         globalPosts.slice(0, 10).forEach(post => {
             feed.innerHTML += `<div class="post-card"><div class="post-header"><img src="${post.avatar}" class="post-avatar"><div><h5>${post.author}</h5><span>${post.date}</span></div></div><div class="post-content">${post.content}</div></div>`;
         });
@@ -640,19 +710,16 @@
         const time = document.getElementById('time-input').value;
         if (name && time && selectedDays.length > 0) {
             currentUser.lessons.push({ name, time, days: [...selectedDays] });
+            currentUser.points = (currentUser.points || 0) + 20;
             saveToStorage();
-            renderLessons();
-            document.getElementById('subject-input').value = '';
-            document.getElementById('time-input').value = '';
-            document.querySelectorAll('.day-chip').forEach(c => c.classList.remove('selected'));
-            selectedDays = [];
+            location.reload();
         }
     }
 
     function updateUI() {
         if (!currentUser) return;
         document.getElementById('main-clock').innerText = new Date().toLocaleTimeString('ar-EG');
-        document.getElementById('motivational-msg').innerText = `استمر يا ${currentUser.username}، النجاح حليفك!`;
+        document.getElementById('motivational-msg').innerText = `استمر يا ${currentUser.username}، الهمة طريقك للقمة!`;
         renderLessons();
     }
 
@@ -665,9 +732,11 @@
     }
 
     function deleteLesson(i) {
-        currentUser.lessons.splice(i, 1);
-        saveToStorage();
-        renderLessons();
+        if(confirm('حذف المهمة؟')){
+            currentUser.lessons.splice(i, 1);
+            saveToStorage();
+            renderLessons();
+        }
     }
 
     function saveToStorage() {
