@@ -1,33 +1,34 @@
-// اسم المخزن المؤقت (يمكنك تغييره عند تحديث الموقع)
+// اسم المخزن المؤقت (الكاش)
 const CACHE_NAME = 'hemma-platform-v1';
 
-// قائمة الملفات التي سيتم تخزينها للعمل بدون إنترنت
+// قائمة الملفات المطلوب تخزينها ليعمل الموقع بدون إنترنت
 const assetsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
+  './',
+  './index.html',
+  './manifest.json',
+  './sw.js',
   'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
   'https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap'
 ];
 
-// 1. حدث التثبيت: يتم فيه حفظ الملفات الأساسية في الكاش
+// تثبيت الـ Service Worker وتخزين الملفات
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('تم فتح الكاش وتخزين الملفات بنجاح');
+      console.log('تم فتح الكاش بنجاح');
       return cache.addAll(assetsToCache);
     })
   );
 });
 
-// 2. حدث التنشيط: يتم فيه حذف النسخ القديمة من الكاش إذا وجدت
+// تفعيل الـ Service Worker وتنظيف الكاش القديم
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cache) => {
           if (cache !== CACHE_NAME) {
-            console.log('جاري حذف الكاش القديم:', cache);
+            console.log('حذف الكاش القديم:', cache);
             return caches.delete(cache);
           }
         })
@@ -36,15 +37,11 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// 3. حدث الجلب: للبحث عن الملفات في الكاش أولاً قبل طلبها من الإنترنت
+// جلب الملفات من الكاش في حال عدم وجود اتصال بالإنترنت
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
-      // إذا وجد الملف في الكاش، قم بإرجاعه، وإلا اطلبه من الإنترنت
       return response || fetch(event.request);
-    }).catch(() => {
-      // في حالة فشل الجلب وعدم وجود إنترنت (اختياري: يمكنك عرض صفحة Offline)
-      console.log('الموقع يعمل الآن في وضع عدم الاتصال');
     })
   );
 });
