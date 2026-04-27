@@ -422,7 +422,6 @@
     let currentUser = null;
     let selectedDays = [];
     let currentY = 50;
-
     let globalPosts = JSON.parse(localStorage.getItem('hemma_global_posts')) || [];
 
     function handleImage(input, targetId) {
@@ -499,7 +498,6 @@
         }
     }
 
-    // استعادة وظيفة التصدير
     function exportData() {
         const allData = {};
         const allUserNames = JSON.parse(localStorage.getItem('all_hemma_users')) || [];
@@ -533,7 +531,6 @@
         }
     }
 
-    // نظام سحب الصورة الجديد (بدون شريط)
     const dragArea = document.getElementById('drag-area');
     const previewImg = document.getElementById('modal-img-preview');
 
@@ -543,7 +540,7 @@
     function startDrag(startY) {
         const initialY = currentY;
         const onMove = (moveEvent) => {
-            const currentMoveY = moveEvent.clientY || moveEvent.touches[0].clientY;
+            const currentMoveY = moveEvent.clientY || (moveEvent.touches && moveEvent.touches[0].clientY);
             const diff = (currentMoveY - startY) / 2;
             currentY = Math.max(0, Math.min(100, initialY - diff));
             previewImg.style.objectPosition = `center ${currentY}%`;
@@ -551,8 +548,8 @@
         const stopDrag = () => {
             document.onmousemove = document.ontouchmove = null;
         };
-        document.onmousemove = ontouchmove = onMove;
-        document.onmouseup = ontouchend = stopDrag;
+        document.onmousemove = document.ontouchmove = onMove;
+        document.onmouseup = document.ontouchend = stopDrag;
     }
 
     function openPhotoEditor() {
@@ -572,7 +569,7 @@
         mainImg.style.objectPosition = `center ${currentY}%`;
         saveToStorage();
         closePhotoEditor();
-        location.reload(); 
+        renderPosts(); // تحديث الصورة في المنشورات بدون ريلود
     }
 
     function createPost() {
@@ -607,7 +604,12 @@
         if (name && time && selectedDays.length > 0) {
             currentUser.lessons.push({ name, time, days: [...selectedDays] });
             saveToStorage();
-            location.reload();
+            renderLessons(); // تحديث الجدول فوراً بدون ريلود
+            // مسح الحقول بعد الإضافة
+            document.getElementById('subject-input').value = '';
+            document.getElementById('time-input').value = '';
+            document.querySelectorAll('.day-chip').forEach(c => c.classList.remove('selected'));
+            selectedDays = [];
         }
     }
 
