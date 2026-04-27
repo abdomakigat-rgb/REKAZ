@@ -1,0 +1,44 @@
+{
+  "name": "منصة هِمة الذكية | HEMMA Platform",
+  "short_name": "هِمة",
+  "description": "المنصة الذكية لتنظيم الجداول الدراسية والمهام التعليمية وتواصل المتفوقين.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#f0f2f5",
+  "theme_color": "#2563eb",
+  "orientation": "portrait",
+  "dir": "rtl",
+  "lang": "ar-EG",
+  "scope": "/",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/mobile-view.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "واجهة الموبايل لمنصة همة"
+    },
+    {
+      "src": "screenshots/desktop-view.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "واجهة الكمبيوتر لمنصة همة"
+    }
+  ]
+}
